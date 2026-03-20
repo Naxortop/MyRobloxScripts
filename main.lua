@@ -1,4 +1,4 @@
--- [[ NAXOR V4 - THE FINAL INTEGRATED VERSION ]] --
+-- [[ NAXOR V4 - COMPLETE INTEGRATED EDITION ]] --
 
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
@@ -6,200 +6,126 @@ local PlayerGui = LP:WaitForChild("PlayerGui")
 local UIS = game:GetService("UserInputService")
 local TS = game:GetService("TweenService")
 
--- [1] تنظيف النسخ السابقة لضمان عدم التكرار
-for _, v in pairs(PlayerGui:GetChildren()) do
-    if v.Name == "Naxor_Official_V4" then v:Destroy() end
+-- تنظيف النسخ السابقة
+if PlayerGui:FindFirstChild("Naxor_Official_V4") then
+    PlayerGui:FindFirstChild("Naxor_Official_V4"):Destroy()
 end
 
--- متغيرات الألوان والـ RGB الأساسية
-local R, G, B = 255, 0, 50
-local MainColor = Color3.fromRGB(R, G, B)
+local MainColor = Color3.fromRGB(255, 0, 50)
 
--- [2] إنشاء الواجهة الأساسية (ScreenGui)
+-- [1] الشاشة الرئيسية
 local Screen = Instance.new("ScreenGui", PlayerGui)
 Screen.Name = "Naxor_Official_V4"
 Screen.IgnoreGuiInset = true
-Screen.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
--- الإطار الرئيسي (Main Frame)
-local Main = Instance.new("Frame", Screen)
-Main.Name = "Main"
-Main.Size = UDim2.new(0, 560, 0, 390)
-Main.Position = UDim2.new(0.5, -280, 0.5, -195)
-Main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-Main.BorderSizePixel = 0
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 20)
+-- [2] الزر العائم (Draggable)
+local ToggleBtn = Instance.new("ImageButton", Screen)
+ToggleBtn.Size = UDim2.new(0, 50, 0, 50); ToggleBtn.Position = UDim2.new(0, 50, 0, 50)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15); ToggleBtn.Image = "rbxassetid://6031094067"
+ToggleBtn.Visible = false; Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
+local ToggleStroke = Instance.new("UIStroke", ToggleBtn); ToggleStroke.Thickness = 2; ToggleStroke.Color = MainColor
 
-local MainStroke = Instance.new("UIStroke", Main)
-MainStroke.Thickness = 3
-MainStroke.Color = MainColor
-
--- [3] هيدر السحب المحصور (Drag Header)
-local DragHeader = Instance.new("Frame", Main)
-DragHeader.Name = "DragHeader"
-DragHeader.Size = UDim2.new(1, 0, 0, 65)
-DragHeader.BackgroundTransparency = 1
-DragHeader.ZIndex = 10
-
-local dragging, dragStart, startPos
-DragHeader.InputBegan:Connect(function(input)
+local tDragging, tDragStart, tStartPos
+ToggleBtn.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = Main.Position
-        local connection
-        connection = input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-                connection:Disconnect()
-            end
-        end)
+        tDragging = true; tDragStart = input.Position; tStartPos = ToggleBtn.Position
+        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then tDragging = false end end)
     end
 end)
-
 UIS.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    if tDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - tDragStart
+        ToggleBtn.Position = UDim2.new(tStartPos.X.Scale, tStartPos.X.Offset + delta.X, tStartPos.Y.Scale, tStartPos.Y.Offset + delta.Y)
     end
 end)
 
--- [4] الشعار (Logo)
-local Logo = Instance.new("TextLabel", DragHeader)
-Logo.RichText = true
-Logo.Text = "N.X.R <font color='#FF0032'>>>> </font>"
-Logo.Size = UDim2.new(0, 150, 1, 0)
-Logo.Position = UDim2.new(0, 25, 0, 0)
-Logo.BackgroundTransparency = 1
-Logo.TextColor3 = Color3.new(1, 1, 1)
-Logo.TextSize = 26
-Logo.Font = Enum.Font.GothamBold
-Logo.TextXAlignment = Enum.TextXAlignment.Left
+-- [3] الإطار الرئيسي
+local Main = Instance.new("Frame", Screen)
+Main.Size = UDim2.new(0, 560, 0, 390); Main.Position = UDim2.new(0.5, -280, 0.5, -195)
+Main.BackgroundColor3 = Color3.fromRGB(15, 15, 15); Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 20)
+local MainStroke = Instance.new("UIStroke", Main); MainStroke.Thickness = 3; MainStroke.Color = MainColor
 
--- [5] الصفحات (Home & Settings)
-local HomePage = Instance.new("Frame", Main)
-HomePage.Size = UDim2.new(1, -50, 1, -170)
-HomePage.Position = UDim2.new(0, 25, 0, 80)
-HomePage.BackgroundTransparency = 1
-HomePage.Visible = true
+local function ToggleUI() Main.Visible = not Main.Visible; ToggleBtn.Visible = not Main.Visible end
+ToggleBtn.MouseButton1Click:Connect(ToggleUI)
 
-local SettingsPage = Instance.new("Frame", Main)
-SettingsPage.Size = HomePage.Size
-SettingsPage.Position = HomePage.Position
-SettingsPage.BackgroundTransparency = 1
-SettingsPage.Visible = false
+-- [4] الهيدر ونظام القائمة
+local Header = Instance.new("Frame", Main)
+Header.Size = UDim2.new(1, 0, 0, 65); Header.BackgroundTransparency = 1; Header.ZIndex = 10
 
--- [6] تصميم بطاقة الهوية (ID CARD)
-local IDCard = Instance.new("Frame", HomePage)
-IDCard.Size = UDim2.new(0, 195, 1, 0)
-IDCard.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-Instance.new("UICorner", IDCard).CornerRadius = UDim.new(0, 15)
-local IDStroke = Instance.new("UIStroke", IDCard)
-IDStroke.Color = MainColor
-IDStroke.Thickness = 2
-
-local pImg = Instance.new("ImageLabel", IDCard)
-pImg.Size = UDim2.new(0, 70, 0, 70)
-pImg.Position = UDim2.new(0, 15, 0, 15)
-pImg.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
-Instance.new("UICorner", pImg).CornerRadius = UDim.new(0, 12)
-
-local function AddIDLabel(text, y, bold)
-    local l = Instance.new("TextLabel", IDCard)
-    l.Text = text
-    l.Size = UDim2.new(1, -30, 0, 20)
-    l.Position = UDim2.new(0, 15, 0, y)
-    l.BackgroundTransparency = 1
-    l.TextColor3 = Color3.new(1, 1, 1)
-    l.TextSize = 10
-    l.Font = bold and Enum.Font.GothamBold or Enum.Font.GothamMedium
-    l.TextXAlignment = Enum.TextXAlignment.Left
-    return l
-end
-
-AddIDLabel("IDENTIFICATION:", 95, true)
-AddIDLabel("NAME: "..LP.Name:upper(), 115, false)
-AddIDLabel("STATUS: ONLINE", 135, false)
-local accessLabel = AddIDLabel("N.X.R HUB ACCESS", 185, true)
-accessLabel.TextColor3 = MainColor
-
--- مربع الصورة اليمين
-local ImageBox = Instance.new("Frame", HomePage)
-ImageBox.Size = UDim2.new(1, -220, 1, 0)
-ImageBox.Position = UDim2.new(0, 220, 0, 0)
-ImageBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-Instance.new("UICorner", ImageBox).CornerRadius = UDim.new(0, 15)
-local ImgStroke = Instance.new("UIStroke", ImageBox)
-ImgStroke.Color = MainColor
-ImgStroke.Thickness = 2
-
--- [7] الأزرار السفلية (الصغيرة والنيون)
-local ButtonStrokes = {}
-local function CreateNeonButton(name, x, callback)
-    local b = Instance.new("TextButton", Main)
-    b.Size = UDim2.new(0, 110, 0, 50)
-    b.Position = UDim2.new(0, x, 1, -75)
-    b.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-    b.Text = name
-    b.TextColor3 = Color3.new(1, 1, 1)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 12
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 12)
-    local s = Instance.new("UIStroke", b)
-    s.Thickness = 2.5
-    s.Color = MainColor
-    table.insert(ButtonStrokes, s)
-    b.MouseButton1Click:Connect(callback)
-end
-
-CreateNeonButton("CONFIG", 60, function() print("Config Open") end)
-CreateNeonButton("SETTING", 225, function() 
-    HomePage.Visible = not HomePage.Visible 
-    SettingsPage.Visible = not SettingsPage.Visible 
+local mDragging, mDragStart, mStartPos
+Header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        mDragging = true; mDragStart = input.Position; mStartPos = Main.Position
+        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then mDragging = false end end)
+    end
 end)
-CreateNeonButton("AD (إعلان)", 390, function() print("Ad Clicked") end)
+UIS.InputChanged:Connect(function(input)
+    if mDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - mDragStart
+        Main.Position = UDim2.new(mStartPos.X.Scale, mStartPos.X.Offset + delta.X, mStartPos.Y.Scale, mStartPos.Y.Offset + delta.Y)
+    end
+end)
 
--- [8] نظام الـ RGB وتحديث الألوان
-local function UpdateRGB()
-    local C = Color3.fromRGB(R, G, B)
-    MainStroke.Color = C
-    IDStroke.Color = C
-    ImgStroke.Color = C
-    accessLabel.TextColor3 = C
-    Logo.Text = "N.X.R <font color='#" .. C:ToHex() .. "'> >>> </font>"
-    for _, s in pairs(ButtonStrokes) do s.Color = C end
+local CloseBtn = Instance.new("TextButton", Header)
+CloseBtn.Size = UDim2.new(0, 30, 0, 30); CloseBtn.Position = UDim2.new(1, -45, 0, 15); CloseBtn.BackgroundTransparency = 1; CloseBtn.Text = "X"; CloseBtn.TextColor3 = MainColor; CloseBtn.TextSize = 20; CloseBtn.Font = "GothamBold"; CloseBtn.MouseButton1Click:Connect(ToggleUI)
+
+local Logo = Instance.new("TextLabel", Header)
+Logo.RichText = true; Logo.Text = "N.X.R <font color='#FF0032'>>>> </font>"
+Logo.Size = UDim2.new(0, 100, 1, 0); Logo.Position = UDim2.new(0, 25, 0, 0); Logo.BackgroundTransparency = 1; Logo.TextColor3 = Color3.new(1, 1, 1); Logo.TextSize = 22; Logo.Font = "GothamBold"
+
+local Nav = Instance.new("Frame", Header); Nav.Size = UDim2.new(0, 250, 1, 0); Nav.Position = UDim2.new(0, 130, 0, 0); Nav.BackgroundTransparency = 1
+local Underline = Instance.new("Frame", Nav); Underline.Size = UDim2.new(0, 40, 0, 2); Underline.Position = UDim2.new(0, 15, 0, 45); Underline.BackgroundColor3 = MainColor
+local LineNeon = Instance.new("UIStroke", Underline); LineNeon.Color = MainColor
+
+-- [5] الصفحات والمحتوى
+local Pages = { Home = Instance.new("Frame", Main), Scripts = Instance.new("Frame", Main), Credits = Instance.new("Frame", Main) }
+for name, frame in pairs(Pages) do
+    frame.Size = UDim2.new(1, 0, 1, 0); frame.BackgroundTransparency = 1; frame.Visible = (name == "Home")
 end
 
-local function CreateSlider(name, color, order)
-    local f = Instance.new("Frame", SettingsPage)
-    f.Size = UDim2.new(0, 280, 0, 45)
-    f.Position = UDim2.new(0, 10, 0, order * 55)
-    f.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 10)
-    local bar = Instance.new("Frame", f)
-    bar.Size = UDim2.new(0, 180, 0, 4)
-    bar.Position = UDim2.new(0, 85, 0.5, -2)
-    bar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    local dot = Instance.new("TextButton", bar)
-    dot.Size = UDim2.new(0, 16, 0, 16)
-    dot.Position = UDim2.new(0, 0, 0.5, -8)
-    dot.BackgroundColor3 = color
-    dot.Text = ""
-    Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
-    local sliding = false
-    dot.MouseButton1Down:Connect(function() sliding = true end)
-    UIS.InputChanged:Connect(function(input)
-        if sliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local pos = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-            dot.Position = UDim2.new(pos, -8, 0.5, -8)
-            local val = math.floor(pos * 255)
-            if name == "R" then R = val elseif name == "G" then G = val elseif name == "B" then B = val end
-            UpdateRGB()
-        end
-    end)
-    UIS.InputEnded:Connect(function() sliding = false end)
+local function SwitchTab(btnName, xPos)
+    TS:Create(Underline, TweenInfo.new(0.3), {Position = UDim2.new(0, xPos + 15, 0, 45)}):Play()
+    for name, frame in pairs(Pages) do frame.Visible = (name == btnName) end
 end
 
-CreateSlider("R", Color3.new(1, 0, 0), 0)
-CreateSlider("G", Color3.new(0, 1, 0), 1)
-CreateSlider("B", Color3.new(0, 0.6, 1), 2)
+local function CreateNavBtn(name, x, target)
+    local b = Instance.new("TextButton", Nav); b.Size = UDim2.new(0, 70, 1, 0); b.Position = UDim2.new(0, x, 0, 0); b.BackgroundTransparency = 1; b.Text = name; b.TextColor3 = Color3.new(1, 1, 1); b.Font = "GothamMedium"; b.TextSize = 13
+    b.MouseButton1Click:Connect(function() SwitchTab(target, x) end)
+end
+CreateNavBtn("Home", 0, "Home"); CreateNavBtn("Pages", 75, "Scripts"); CreateNavBtn("Credits", 150, "Credits")
+
+-- [ محتوى صفحة HOME فقط ]
+local IDCard = Instance.new("Frame", Pages.Home); IDCard.Size = UDim2.new(0, 195, 0, 220); IDCard.Position = UDim2.new(0, 25, 0, 80); IDCard.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Instance.new("UICorner", IDCard).CornerRadius = UDim.new(0, 15)
+local IDStroke = Instance.new("UIStroke", IDCard); IDStroke.Thickness = 2; IDStroke.Color = MainColor
+
+local pImg = Instance.new("ImageLabel", IDCard); pImg.Size = UDim2.new(0, 70, 0, 70); pImg.Position = UDim2.new(0, 15, 0, 15); pImg.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"; Instance.new("UICorner", pImg).CornerRadius = UDim.new(0, 12)
+
+local function AddInfo(txt, y, col)
+    local l = Instance.new("TextLabel", IDCard); l.Text = txt; l.Position = UDim2.new(0, 15, 0, y); l.Size = UDim2.new(1, -30, 0, 20); l.BackgroundTransparency = 1; l.TextColor3 = col or Color3.new(1, 1, 1); l.TextSize = 9; l.Font = "GothamMedium"; l.TextXAlignment = "Left"
+end
+AddInfo("IDENTIFICATION:", 95, Color3.fromRGB(120, 120, 120)); AddInfo("NAME: "..LP.Name:upper(), 115); AddInfo("STATUS: ONLINE", 135, Color3.fromRGB(0, 255, 130))
+local PlayTimeLabel = Instance.new("TextLabel", IDCard); PlayTimeLabel.Text = "PlayTime: 00:00:00"; PlayTimeLabel.Position = UDim2.new(0, 15, 0, 155); PlayTimeLabel.Size = UDim2.new(1, -30, 0, 20); PlayTimeLabel.BackgroundTransparency = 1; PlayTimeLabel.TextColor3 = Color3.fromRGB(255, 80, 80); PlayTimeLabel.TextSize = 9; PlayTimeLabel.Font = "GothamMedium"; PlayTimeLabel.TextXAlignment = "Left"
+local accTxt = Instance.new("TextLabel", IDCard); accTxt.Text = "N.X.R HUB ACCESS"; accTxt.Position = UDim2.new(0, 15, 0, 185); accTxt.Size = UDim2.new(1, -30, 0, 20); accTxt.BackgroundTransparency = 1; accTxt.TextColor3 = MainColor; accTxt.TextSize = 10; accTxt.Font = "GothamBold"; accTxt.TextXAlignment = "Left"
+
+local PicBox = Instance.new("Frame", Pages.Home); PicBox.Size = UDim2.new(1, -270, 0, 220); PicBox.Position = UDim2.new(0, 245, 0, 80); PicBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Instance.new("UICorner", PicBox).CornerRadius = UDim.new(0, 15)
+local PicStroke = Instance.new("UIStroke", PicBox); PicStroke.Thickness = 2; PicStroke.Color = MainColor
+local PicLabel = Instance.new("TextLabel", PicBox); PicLabel.Text = "PIC"; PicLabel.Size = UDim2.new(1, 0, 1, 0); PicLabel.BackgroundTransparency = 1; PicLabel.TextColor3 = Color3.fromRGB(30, 30, 30); PicLabel.TextSize = 60; PicLabel.Font = "GothamBold"
+
+-- الأزرار السفلية مرتبطة بصفحة الهوم
+local function CreateBtm(name, x)
+    local b = Instance.new("TextButton", Pages.Home); b.Size = UDim2.new(0, 110, 0, 45); b.Position = UDim2.new(0, x + 25, 1, -70); b.BackgroundColor3 = Color3.fromRGB(12, 12, 12); b.Text = name; b.TextColor3 = Color3.new(1, 1, 1); b.Font = "GothamBold"; b.TextSize = 11
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 10); local s = Instance.new("UIStroke", b); s.Thickness = 2.5; s.Color = MainColor; s.ApplyStrokeMode = "Border"
+end
+CreateBtm("CONFIG", 60); CreateBtm("SETTING", 225); CreateBtm("AD (إعلان)", 390)
+
+-- [6] نظام PlayTime
+local StartTime = os.time()
+task.spawn(function()
+    while task.wait(1) do
+        local Elapsed = os.time() - StartTime
+        local H = math.floor(Elapsed / 3600); local M = math.floor((Elapsed % 3600) / 60); local S = Elapsed % 60
+        PlayTimeLabel.Text = string.format("PlayTime: %02d:%02d:%02d", H, M, S)
+    end
+end)
+
+print("Naxor V4: Perfect Integration Ready.")
