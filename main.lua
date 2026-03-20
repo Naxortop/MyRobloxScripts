@@ -1,338 +1,166 @@
--- [[ NAXOR V4 - THE SUPREME FULL SOURCE - NO SHORTCUTS ]] --
+-- [[ NAXOR V4 - THE MASTERPIECE FINAL VERSION - NO ERRORS ]] --
 
--- [1] استدعاء الخدمات (Services)
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local PlayerGui = LP:WaitForChild("PlayerGui")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
--- [2] تنظيف أي نسخة قديمة موجودة في الشاشة
-local OldGui = PlayerGui:FindFirstChild("Naxor_Official_V4")
-if OldGui then
-    OldGui:Destroy()
+-- [1] تنظيف أي نسخة قديمة
+if PlayerGui:FindFirstChild("Naxor_Official_V4") then
+    PlayerGui.Naxor_Official_V4:Destroy()
 end
 
--- [3] إنشاء حاوية الشاشة الرئيسية (ScreenGui)
+-- [2] حاوية الشاشة
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "Naxor_Official_V4"
 ScreenGui.Parent = PlayerGui
 ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.DisplayOrder = 99999
 
--- [4] إنشاء اللوحة الرئيسية (Main Frame)
+-- متغيرات الألوان (RGB)
+local Val_R, Val_G, Val_B = 255, 0, 50
+
+-- [3] اللوحة الرئيسية
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
 MainFrame.Size = UDim2.new(0, 480, 0, 340)
 MainFrame.Position = UDim2.new(0.5, -240, 0.5, -170)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true 
-MainFrame.Visible = true
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
 
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 12)
-MainCorner.Parent = MainFrame
-
-local MainStroke = Instance.new("UIStroke")
-MainStroke.Name = "MainStroke"
-MainStroke.Parent = MainFrame
-MainStroke.Color = Color3.fromRGB(255, 0, 50) -- اللون الافتراضي أحمر
+local MainStroke = Instance.new("UIStroke", MainFrame)
 MainStroke.Thickness = 2.5
-MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+MainStroke.Color = Color3.fromRGB(Val_R, Val_G, Val_B)
 
--- [5] العنوان العلوي N.X.R
-local LogoLabel = Instance.new("TextLabel")
-LogoLabel.Name = "LogoLabel"
-LogoLabel.Parent = MainFrame
-LogoLabel.Text = "N.X.R <font color='#FF0032'>>>> </font>"
+-- [4] العنوان العلوي N.X.R
+local LogoLabel = Instance.new("TextLabel", MainFrame)
 LogoLabel.RichText = true
+LogoLabel.Text = "N.X.R <font color='#FF0032'>>>> </font>"
 LogoLabel.Size = UDim2.new(0, 150, 0, 50)
 LogoLabel.Position = UDim2.new(0, 20, 0, 5)
 LogoLabel.BackgroundTransparency = 1
-LogoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+LogoLabel.TextColor3 = Color3.new(1, 1, 1)
 LogoLabel.TextSize = 24
-LogoLabel.Font = Enum.Font.GothamBold
-LogoLabel.TextXAlignment = Enum.TextXAlignment.Left
+LogoLabel.Font = "GothamBold"
+LogoLabel.TextXAlignment = "Left"
 
--- [6] الخط الأحمر المتحرك (Tab Indicator)
-local TabIndicator = Instance.new("Frame")
-TabIndicator.Name = "TabIndicator"
-TabIndicator.Parent = MainFrame
+-- [5] الخط المتحرك
+local TabIndicator = Instance.new("Frame", MainFrame)
 TabIndicator.Size = UDim2.new(0, 35, 0, 2)
-TabIndicator.Position = UDim2.new(1, -90, 0, 47) -- مكانه تحت الهوم
-TabIndicator.BackgroundColor3 = Color3.fromRGB(255, 0, 50)
+TabIndicator.Position = UDim2.new(1, -90, 0, 47)
+TabIndicator.BackgroundColor3 = Color3.fromRGB(Val_R, Val_G, Val_B)
 TabIndicator.BorderSizePixel = 0
-TabIndicator.ZIndex = 10
 
--- [7] إنشاء صفحات الواجهة (Home, Pages, Settings)
-local HomePage = Instance.new("Frame")
-HomePage.Name = "HomePage"
-HomePage.Parent = MainFrame
-HomePage.Size = UDim2.new(1, 0, 1, 0)
-HomePage.BackgroundTransparency = 1
-HomePage.Visible = true
+-- [6] إنشاء الصفحات
+local HomePage = Instance.new("Frame", MainFrame)
+HomePage.Name = "HomePage"; HomePage.Size = UDim2.new(1, 0, 1, 0); HomePage.BackgroundTransparency = 1; HomePage.Visible = true
 
-local PagesPage = Instance.new("Frame")
-PagesPage.Name = "PagesPage"
-PagesPage.Parent = MainFrame
-PagesPage.Size = UDim2.new(1, 0, 1, 0)
-PagesPage.BackgroundTransparency = 1
-PagesPage.Visible = false
+local PagesPage = Instance.new("Frame", MainFrame)
+PagesPage.Name = "PagesPage"; PagesPage.Size = UDim2.new(1, 0, 1, 0); PagesPage.BackgroundTransparency = 1; PagesPage.Visible = false
 
-local SettingsPage = Instance.new("Frame")
-SettingsPage.Name = "SettingsPage"
-SettingsPage.Parent = MainFrame
-SettingsPage.Size = UDim2.new(1, 0, 1, 0)
-SettingsPage.BackgroundTransparency = 1
-SettingsPage.Visible = false
+local SettingsPage = Instance.new("Frame", MainFrame)
+SettingsPage.Name = "SettingsPage"; SettingsPage.Size = UDim2.new(1, 0, 1, 0); SettingsPage.BackgroundTransparency = 1; SettingsPage.Visible = false
 
--- [8] محتويات صفحة الهوم (HOME CONTENT)
-local AvatarImage = Instance.new("ImageLabel")
-AvatarImage.Name = "AvatarImage"
-AvatarImage.Parent = HomePage
-AvatarImage.Size = UDim2.new(0, 60, 0, 60)
-AvatarImage.Position = UDim2.new(0, 20, 0, 65)
-AvatarImage.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
-AvatarImage.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-local AvatarCorner = Instance.new("UICorner", AvatarImage)
-AvatarCorner.CornerRadius = UDim.new(0, 8)
-
-local InfoLabel = Instance.new("TextLabel")
-InfoLabel.Name = "InfoLabel"
-InfoLabel.Parent = HomePage
-InfoLabel.Size = UDim2.new(0, 180, 0, 110)
-InfoLabel.Position = UDim2.new(0, 20, 0, 130)
-InfoLabel.BackgroundTransparency = 1
-InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-InfoLabel.TextSize = 13
-InfoLabel.Font = Enum.Font.GothamBold
-InfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+-- [7] محتويات الهوم (التايمر والمعلومات)
+local InfoLabel = Instance.new("TextLabel", HomePage)
+InfoLabel.Size = UDim2.new(0, 180, 0, 110); InfoLabel.Position = UDim2.new(0, 20, 0, 130); InfoLabel.BackgroundTransparency = 1; InfoLabel.TextColor3 = Color3.new(1,1,1); InfoLabel.TextSize = 13; InfoLabel.Font = "GothamBold"; InfoLabel.TextXAlignment = "Left"
 
 local ShowFPS = true
 local StartTime = tick()
 RunService.RenderStepped:Connect(function()
-    local Elapsed = tick() - StartTime
     local FPS = math.floor(1 / RunService.RenderStepped:Wait())
-    local FPSText = ""
-    if ShowFPS == true then
-        FPSText = "\nFPS: " .. FPS
-    else
-        FPSText = "\nFPS: HIDDEN"
-    end
-    local TimeStr = string.format("%02d:%02d:%02d", math.floor(Elapsed/3600), math.floor((Elapsed%3600)/60), math.floor(Elapsed%60))
-    InfoLabel.Text = "USER: " .. LP.Name:upper() .. "\nSTATUS: ONLINE" .. FPSText .. "\nTIME: " .. TimeStr .. "\nN.X.R ACTIVE"
+    local TimeStr = string.format("%02d:%02d:%02d", math.floor((tick()-StartTime)/3600), math.floor(((tick()-StartTime)%3600)/60), math.floor((tick()-StartTime)%60))
+    InfoLabel.Text = "USER: "..LP.Name:upper().."\nSTATUS: ONLINE"..(ShowFPS and "\nFPS: "..FPS or "\nFPS: HIDDEN").."\nTIME: "..TimeStr.."\nN.X.R ACTIVE"
 end)
 
-local CenterBox = Instance.new("Frame")
-CenterBox.Name = "CenterBox"
-CenterBox.Parent = HomePage
-CenterBox.Size = UDim2.new(0, 285, 0, 185)
-CenterBox.Position = UDim2.new(0, 180, 0, 65)
-CenterBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-local CenterCorner = Instance.new("UICorner", CenterBox)
-CenterCorner.CornerRadius = UDim.new(0, 10)
-local CenterStroke = Instance.new("UIStroke", CenterBox)
-CenterStroke.Name = "CenterStroke"
-CenterStroke.Color = Color3.fromRGB(255, 0, 50)
-CenterStroke.Thickness = 1.5
+local CenterBox = Instance.new("Frame", HomePage)
+CenterBox.Size = UDim2.new(0, 285, 0, 185); CenterBox.Position = UDim2.new(0, 180, 0, 65); CenterBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+Instance.new("UICorner", CenterBox).CornerRadius = UDim.new(0, 10)
+local CBStroke = Instance.new("UIStroke", CenterBox); CBStroke.Thickness = 1.5; CBStroke.Color = Color3.fromRGB(Val_R, Val_G, Val_B)
 
--- [9] محتويات صفحة الإعدادات (SETTINGS CONTENT)
-local SettingsTitle = Instance.new("TextLabel")
-SettingsTitle.Name = "SettingsTitle"
-SettingsTitle.Parent = SettingsPage
-SettingsTitle.Text = "SYSTEM SETTINGS"
-SettingsTitle.Size = UDim2.new(0, 200, 0, 30)
-SettingsTitle.Position = UDim2.new(0, 20, 0, 70)
-SettingsTitle.BackgroundTransparency = 1
-SettingsTitle.TextColor3 = Color3.fromRGB(255, 0, 50)
-SettingsTitle.TextSize = 18
-SettingsTitle.Font = Enum.Font.GothamBold
-SettingsTitle.TextXAlignment = Enum.TextXAlignment.Left
+-- [8] نظام اختيار الألوان (RGB Sliders)
+local SettingsTitle = Instance.new("TextLabel", SettingsPage)
+SettingsTitle.Text = "CUSTOM THEME CONTROL"; SettingsTitle.Size = UDim2.new(0, 200, 0, 30); SettingsTitle.Position = UDim2.new(0, 20, 0, 65); SettingsTitle.BackgroundTransparency = 1; SettingsTitle.TextColor3 = Color3.fromRGB(Val_R, Val_G, Val_B); SettingsTitle.TextSize = 18; SettingsTitle.Font = "GothamBold"; SettingsTitle.TextXAlignment = "Left"
 
-local BlueThemeBtn = Instance.new("TextButton")
-BlueThemeBtn.Name = "BlueThemeBtn"
-BlueThemeBtn.Parent = SettingsPage
-BlueThemeBtn.Text = "BLUE THEME"
-BlueThemeBtn.Size = UDim2.new(0, 120, 0, 35)
-BlueThemeBtn.Position = UDim2.new(0, 20, 0, 110)
-BlueThemeBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-BlueThemeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-BlueThemeBtn.Font = Enum.Font.GothamBold
-BlueThemeBtn.TextSize = 12
-local BlueCorner = Instance.new("UICorner", BlueThemeBtn)
-BlueCorner.CornerRadius = UDim.new(0, 6)
+local function UpdateColors()
+    local C = Color3.fromRGB(Val_R, Val_G, Val_B)
+    MainStroke.Color = C; TabIndicator.BackgroundColor3 = C; CBStroke.Color = C; SettingsTitle.TextColor3 = C
+    LogoLabel.Text = "N.X.R <font color='#"..C:ToHex().."'> >>> </font>"
+end
 
-local RedThemeBtn = Instance.new("TextButton")
-RedThemeBtn.Name = "RedThemeBtn"
-RedThemeBtn.Parent = SettingsPage
-RedThemeBtn.Text = "RED THEME (DEF)"
-RedThemeBtn.Size = UDim2.new(0, 120, 0, 35)
-RedThemeBtn.Position = UDim2.new(0, 150, 0, 110)
-RedThemeBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 50)
-RedThemeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-RedThemeBtn.Font = Enum.Font.GothamBold
-RedThemeBtn.TextSize = 10
-local RedCorner = Instance.new("UICorner", RedThemeBtn)
-RedCorner.CornerRadius = UDim.new(0, 6)
+local function MakeSlider(name, col, order)
+    local SFrame = Instance.new("Frame", SettingsPage)
+    SFrame.Size = UDim2.new(0, 250, 0, 35); SFrame.Position = UDim2.new(0, 20, 0, 100 + (order * 40)); SFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+    Instance.new("UICorner", SFrame).CornerRadius = UDim.new(0, 6)
+    
+    local T = Instance.new("TextLabel", SFrame); T.Text = name; T.Size = UDim2.new(0, 30, 1, 0); T.BackgroundTransparency = 1; T.TextColor3 = col; T.Font = "GothamBold"
+    local Bar = Instance.new("Frame", SFrame); Bar.Size = UDim2.new(0, 180, 0, 4); Bar.Position = UDim2.new(0, 40, 0.5, -2); Bar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    local Dot = Instance.new("TextButton", Bar); Dot.Size = UDim2.new(0, 14, 0, 14); Dot.Position = UDim2.new(0.5, -7, 0.5, -7); Dot.BackgroundColor3 = col; Dot.Text = ""; Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
 
-local FPSToggleBtn = Instance.new("TextButton")
-FPSToggleBtn.Name = "FPSToggleBtn"
-FPSToggleBtn.Parent = SettingsPage
-FPSToggleBtn.Text = "TOGGLE FPS DISPLAY"
-FPSToggleBtn.Size = UDim2.new(0, 250, 0, 35)
-FPSToggleBtn.Position = UDim2.new(0, 20, 0, 155)
-FPSToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-FPSToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-FPSToggleBtn.Font = Enum.Font.GothamBold
-local FPSCorner = Instance.new("UICorner", FPSToggleBtn)
-FPSCorner.CornerRadius = UDim.new(0, 6)
+    local Drag = false
+    Dot.MouseButton1Down:Connect(function() Drag = true end)
+    UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then Drag = false end end)
+    
+    RunService.RenderStepped:Connect(function()
+        if Drag then
+            local MouseX = UserInputService:GetMouseLocation().X
+            local Percent = math.clamp((MouseX - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
+            Dot.Position = UDim2.new(Percent, -7, 0.5, -7)
+            local V = math.floor(Percent * 255)
+            if name == "R" then Val_R = V elseif name == "G" then Val_G = V elseif name == "B" then Val_B = V end
+            UpdateColors()
+        end
+    end)
+end
 
-local DestroyBtn = Instance.new("TextButton")
-DestroyBtn.Name = "DestroyBtn"
-DestroyBtn.Parent = SettingsPage
-DestroyBtn.Text = "DESTROY SCRIPT (UNLOAD)"
-DestroyBtn.Size = UDim2.new(0, 250, 0, 35)
-DestroyBtn.Position = UDim2.new(0, 20, 0, 200)
-DestroyBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-DestroyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-DestroyBtn.Font = Enum.Font.GothamBold
-local DestroyCorner = Instance.new("UICorner", DestroyBtn)
-DestroyCorner.CornerRadius = UDim.new(0, 6)
+MakeSlider("R", Color3.fromRGB(255, 0, 0), 0)
+MakeSlider("G", Color3.fromRGB(0, 255, 0), 1)
+MakeSlider("B", Color3.fromRGB(0, 150, 255), 2)
 
--- برمجة منطق أزرار الإعدادات
-BlueThemeBtn.MouseButton1Click:Connect(function()
-    MainStroke.Color = Color3.fromRGB(0, 120, 255)
-    TabIndicator.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-    CenterStroke.Color = Color3.fromRGB(0, 120, 255)
-    LogoLabel.Text = "N.X.R <font color='#0078FF'>>>> </font>"
-    SettingsTitle.TextColor3 = Color3.fromRGB(0, 120, 255)
-end)
+-- [9] أزرار التنقل (مبرمجة بدقة لتفادي الأخطاء)
+local BottomContainer = Instance.new("Frame", HomePage) -- حاوية لضمان الاختفاء الكامل
+BottomContainer.Size = UDim2.new(1, 0, 0, 80); BottomContainer.Position = UDim2.new(0, 0, 0, 260); BottomContainer.BackgroundTransparency = 1
 
-RedThemeBtn.MouseButton1Click:Connect(function()
-    MainStroke.Color = Color3.fromRGB(255, 0, 50)
-    TabIndicator.BackgroundColor3 = Color3.fromRGB(255, 0, 50)
-    CenterStroke.Color = Color3.fromRGB(255, 0, 50)
-    LogoLabel.Text = "N.X.R <font color='#FF0032'>>>> </font>"
-    SettingsTitle.TextColor3 = Color3.fromRGB(255, 0, 50)
-end)
+local function CreateBtn(parent, text, pos, x)
+    local b = Instance.new("TextButton", parent); b.Size = UDim2.new(0, 148, 0, 70); b.Position = pos; b.BackgroundColor3 = Color3.fromRGB(22, 22, 22); b.Text = text; b.TextColor3 = Color3.new(1,1,1); b.Font = "GothamBold"; Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
+    return b
+end
 
-FPSToggleBtn.MouseButton1Click:Connect(function()
-    ShowFPS = not ShowFPS
-end)
+local ConfigBtn = CreateBtn(BottomContainer, "CONFIG", UDim2.new(0, 10, 0, 0))
+local SettingBtn = CreateBtn(BottomContainer, "SETTING", UDim2.new(0, 165, 0, 0))
+local AdBtn = CreateBtn(BottomContainer, "AD", UDim2.new(0, 322, 0, 0))
 
-DestroyBtn.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
+local HomeBtn = Instance.new("TextButton", MainFrame)
+HomeBtn.Size = UDim2.new(0, 35, 0, 35); HomeBtn.Position = UDim2.new(1, -90, 0, 12); HomeBtn.Text = "🏠"; HomeBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25); HomeBtn.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", HomeBtn).CornerRadius = UDim.new(0, 8)
 
--- [10] أزرار التنقل والتحكم (Navigation Buttons)
-local HomeBtn = Instance.new("TextButton")
-HomeBtn.Name = "HomeBtn"
-HomeBtn.Parent = MainFrame
-HomeBtn.Size = UDim2.new(0, 35, 0, 35)
-HomeBtn.Position = UDim2.new(1, -90, 0, 12)
-HomeBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-HomeBtn.Text = "🏠"
-HomeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-HomeBtn.TextSize = 18
-local HBC = Instance.new("UICorner", HomeBtn)
-HBC.CornerRadius = UDim.new(0, 8)
+local PagesBtn = Instance.new("TextButton", MainFrame)
+PagesBtn.Size = UDim2.new(0, 35, 0, 35); PagesBtn.Position = UDim2.new(1, -45, 0, 12); PagesBtn.Text = "📄"; PagesBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25); PagesBtn.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", PagesBtn).CornerRadius = UDim.new(0, 8)
 
-local PagesBtn = Instance.new("TextButton")
-PagesBtn.Name = "PagesBtn"
-PagesBtn.Parent = MainFrame
-PagesBtn.Size = UDim2.new(0, 35, 0, 35)
-PagesBtn.Position = UDim2.new(1, -45, 0, 12)
-PagesBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-PagesBtn.Text = "📄"
-PagesBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-PagesBtn.TextSize = 18
-local PBC = Instance.new("UICorner", PagesBtn)
-PBC.CornerRadius = UDim.new(0, 8)
-
-local BottomSettingBtn = Instance.new("TextButton")
-BottomSettingBtn.Name = "BottomSettingBtn"
-BottomSettingBtn.Parent = MainFrame
-BottomSettingBtn.Size = UDim2.new(0, 148, 0, 70)
-BottomSettingBtn.Position = UDim2.new(0, 165, 0, 260)
-BottomSettingBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-BottomSettingBtn.Text = "SETTING"
-BottomSettingBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-BottomSettingBtn.Font = Enum.Font.GothamBold
-local BSBC = Instance.new("UICorner", BottomSettingBtn)
-BSBC.CornerRadius = UDim.new(0, 8)
-
-local BottomConfigBtn = Instance.new("TextButton")
-BottomConfigBtn.Name = "BottomConfigBtn"
-BottomConfigBtn.Parent = HomePage
-BottomConfigBtn.Size = UDim2.new(0, 148, 0, 70)
-BottomConfigBtn.Position = UDim2.new(0, 10, 0, 260)
-BottomConfigBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-BottomConfigBtn.Text = "CONFIG"
-BottomConfigBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-BottomConfigBtn.Font = Enum.Font.GothamBold
-local BCBC = Instance.new("UICorner", BottomConfigBtn)
-BCBC.CornerRadius = UDim.new(0, 8)
-
-local BottomAdBtn = Instance.new("TextButton")
-BottomAdBtn.Name = "BottomAdBtn"
-BottomAdBtn.Parent = HomePage
-BottomAdBtn.Size = UDim2.new(0, 148, 0, 70)
-BottomAdBtn.Position = UDim2.new(0, 322, 0, 260)
-BottomAdBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-BottomAdBtn.Text = "AD"
-BottomAdBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-BottomAdBtn.Font = Enum.Font.GothamBold
-local BABC = Instance.new("UICorner", BottomAdBtn)
-BABC.CornerRadius = UDim.new(0, 8)
-
--- برمجة تبديل الصفحات مع تأثيرات الخط
+-- وظيفة التنقل الصارمة
 HomeBtn.MouseButton1Click:Connect(function()
-    HomePage.Visible = true
-    PagesPage.Visible = false
-    SettingsPage.Visible = false
-    TweenService:Create(TabIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Position = UDim2.new(1, -90, 0, 47)}):Play()
+    HomePage.Visible = true; PagesPage.Visible = false; SettingsPage.Visible = false
+    TweenService:Create(TabIndicator, TweenInfo.new(0.3), {Position = UDim2.new(1, -90, 0, 47)}):Play()
 end)
 
 PagesBtn.MouseButton1Click:Connect(function()
-    HomePage.Visible = false
-    PagesPage.Visible = true
-    SettingsPage.Visible = false
-    TweenService:Create(TabIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Position = UDim2.new(1, -45, 0, 47)}):Play()
+    HomePage.Visible = false; PagesPage.Visible = true; SettingsPage.Visible = false
+    TweenService:Create(TabIndicator, TweenInfo.new(0.3), {Position = UDim2.new(1, -45, 0, 47)}):Play()
 end)
 
-BottomSettingBtn.MouseButton1Click:Connect(function()
-    HomePage.Visible = false
-    PagesPage.Visible = false
-    SettingsPage.Visible = true
-    TweenService:Create(TabIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Position = UDim2.new(1, -67, 0, 47)}):Play()
+SettingBtn.MouseButton1Click:Connect(function()
+    HomePage.Visible = false; PagesPage.Visible = false; SettingsPage.Visible = true
+    TweenService:Create(TabIndicator, TweenInfo.new(0.3), {Position = UDim2.new(1, -67, 0, 47)}):Play()
 end)
 
--- [11] الزر العائم NXR لإخفاء وإظهار الواجهة
-local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Name = "ToggleBtn"
-ToggleBtn.Parent = ScreenGui
-ToggleBtn.Size = UDim2.new(0, 55, 0, 55)
-ToggleBtn.Position = UDim2.new(1, -70, 0, 20)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-ToggleBtn.Text = "NXR"
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 0, 50)
-ToggleBtn.Font = Enum.Font.GothamBold
-ToggleBtn.TextSize = 15
-ToggleBtn.Draggable = true
-local ToggleCorner = Instance.new("UICorner", ToggleBtn)
-ToggleCorner.CornerRadius = UDim.new(1, 0)
-local ToggleStroke = Instance.new("UIStroke", ToggleBtn)
-ToggleStroke.Color = Color3.fromRGB(255, 0, 50)
-ToggleStroke.Thickness = 3
+-- [10] الزر العائم
+local Toggle = Instance.new("TextButton", ScreenGui); Toggle.Size = UDim2.new(0, 55, 0, 55); Toggle.Position = UDim2.new(1, -70, 0, 20); Toggle.BackgroundColor3 = Color3.fromRGB(15, 15, 15); Toggle.Text = "NXR"; Toggle.TextColor3 = Color3.fromRGB(255, 0, 50); Toggle.Font = "GothamBold"; Toggle.Draggable = true; Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0); local TS = Instance.new("UIStroke", Toggle); TS.Color = Color3.fromRGB(255, 0, 50); TS.Thickness = 3
+Toggle.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
-ToggleBtn.MouseButton1Click:Connect(function()
-    if MainFrame.Visible == true then
-        MainFrame.Visible = false
-    else
-        MainFrame.Visible = true
-    end
-end)
+local Unload = Instance.new("TextButton", SettingsPage)
+Unload.Text = "UNLOAD"; Unload.Size = UDim2.new(0, 100, 0, 35); Unload.Position = UDim2.new(0, 20, 0, 230); Unload.BackgroundColor3 = Color3.fromRGB(80, 0, 0); Unload.TextColor3 = Color3.new(1,1,1); Unload.Font = "GothamBold"; Instance.new("UICorner", Unload).CornerRadius = UDim.new(0, 6)
+Unload.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
