@@ -1,182 +1,110 @@
--- [[ NAXOR V4 - THE FULL UNABRIDGED VERSION ]] --
+-- [[ NAXOR V4 - THE ULTIMATE INTEGRATION ]] --
 
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local PlayerGui = LP:WaitForChild("PlayerGui")
 local UIS = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
+local TS = game:GetService("TweenService")
 
--- [1] تنظيف أي نسخة قديمة لضمان عدم التداخل
+-- [1] تنظيف البيئة
 for _, v in pairs(PlayerGui:GetChildren()) do
     if v.Name == "Naxor_Official_V4" then v:Destroy() end
 end
 
--- متغيرات الثيم الأساسية
-local R, G, B = 255, 0, 50
+local MainColor = Color3.fromRGB(255, 0, 50)
+local BGColor = Color3.fromRGB(15, 15, 15)
 
--- [2] إنشاء الواجهة الرئيسية (ScreenGui)
+-- [2] الواجهة الأساسية
 local Screen = Instance.new("ScreenGui", PlayerGui)
 Screen.Name = "Naxor_Official_V4"
-Screen.ResetOnSpawn = false
-Screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Screen.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
--- الإطار الرئيسي (Main Frame)
 local Main = Instance.new("Frame", Screen)
-Main.Name = "MainFrame"
-Main.Size = UDim2.new(0, 520, 0, 360) -- كبرت الحجم شوي عشان الستات
-Main.Position = UDim2.new(0.5, -260, 0.5, -180)
-Main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Main.Size = UDim2.new(0, 550, 0, 380)
+Main.Position = UDim2.new(0.5, -275, 0.5, -190)
+Main.BackgroundColor3 = BGColor
 Main.BorderSizePixel = 0
-Main.Active = true
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 18)
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 15)
+local MainStroke = Instance.new("UIStroke", Main); MainStroke.Thickness = 2.5; MainStroke.Color = MainColor
 
--- حدود الواجهة المتغيرة (RGB Stroke)
-local Stroke = Instance.new("UIStroke", Main)
-Stroke.Thickness = 2.5
-Stroke.Color = Color3.fromRGB(R, G, B)
-
--- [3] شريط سحب الآيفون (iPhone Home Bar)
-local DragBar = Instance.new("Frame", Main)
-DragBar.Name = "iPhoneBar"
-DragBar.Size = UDim2.new(0, 150, 0, 4)
-DragBar.Position = UDim2.new(0.5, -75, 1, -12)
-DragBar.BackgroundColor3 = Color3.new(1, 1, 1)
-DragBar.BackgroundTransparency = 0.4
-DragBar.ZIndex = 20
-Instance.new("UICorner", DragBar).CornerRadius = UDim.new(1, 0)
-
--- برمجة السحب الحصري من الخط السفلي فقط
-local MainDragging, DragStart, StartPos
-DragBar.InputBegan:Connect(function(input)
+-- [3] نظام السحب الآمن (يمنع الـ false)
+local dragging, dragInput, dragStart, startPos
+Main.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        MainDragging = true
-        DragStart = input.Position
-        StartPos = Main.Position
+        dragging = true; dragStart = input.Position; startPos = Main.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
     end
 end)
-
 UIS.InputChanged:Connect(function(input)
-    if MainDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local Delta = input.Position - DragStart
-        Main.Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
 
-UIS.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        MainDragging = false
-    end
-end)
-
--- [4] الشعار العلوي (N.X.R >>>)
+-- [4] الهيدر (Logo & Tabs)
 local Logo = Instance.new("TextLabel", Main)
-Logo.Name = "Logo"
-Logo.RichText = true
-Logo.Text = "N.X.R <font color='#FF0032'>>>> </font>"
-Logo.Size = UDim2.new(0, 200, 0, 60)
-Logo.Position = UDim2.new(0, 25, 0, 10)
-Logo.BackgroundTransparency = 1
-Logo.TextColor3 = Color3.new(1, 1, 1)
-Logo.TextSize = 28
-Logo.Font = "GothamBold"
-Logo.TextXAlignment = "Left"
+Logo.Text = "N.X.R >>>"; Logo.Size = UDim2.new(0, 150, 0, 50); Logo.Position = UDim2.new(0, 25, 0, 5)
+Logo.BackgroundTransparency = 1; Logo.TextColor3 = Color3.new(1, 1, 1); Logo.TextSize = 26; Logo.Font = "GothamBold"; Logo.TextXAlignment = "Left"
 
--- [5] الحاويات (الصفحات)
-local HomeP = Instance.new("Frame", Main); HomeP.Size = UDim2.new(1, 0, 1, 0); HomeP.BackgroundTransparency = 1; HomeP.Visible = true
-local SettingsP = Instance.new("Frame", Main); SettingsP.Size = UDim2.new(1, 0, 1, 0); SettingsP.BackgroundTransparency = 1; SettingsP.Visible = false
-local ScriptP = Instance.new("Frame", Main); ScriptP.Size = UDim2.new(1, 0, 1, 0); ScriptP.BackgroundTransparency = 1; ScriptP.Visible = false
+local TabHolder = Instance.new("Frame", Main)
+TabHolder.Size = UDim2.new(0, 250, 0, 40); TabHolder.Position = UDim2.new(1, -275, 0, 10); TabHolder.BackgroundTransparency = 1
 
--- [6] لوحة معلومات اللاعب (PLAYER STATS) - في صفحة الهوم
-local StatsFrame = Instance.new("Frame", HomeP)
-StatsFrame.Size = UDim2.new(0, 470, 0, 100)
-StatsFrame.Position = UDim2.new(0.5, -235, 0, 80)
-StatsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Instance.new("UICorner", StatsFrame).CornerRadius = UDim.new(0, 12)
+local TabLine = Instance.new("Frame", TabHolder)
+TabLine.Size = UDim2.new(0, 40, 0, 2); TabLine.Position = UDim2.new(0, 15, 1, -5); TabLine.BackgroundColor3 = MainColor; TabLine.BorderSizePixel = 0
 
--- صورة اللاعب
-local pImage = Instance.new("ImageLabel", StatsFrame)
-pImage.Size = UDim2.new(0, 70, 0, 70)
-pImage.Position = UDim2.new(0, 15, 0.5, -35)
-pImage.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-pImage.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
-Instance.new("UICorner", pImage).CornerRadius = UDim.new(1, 0)
-
--- اسم اللاعب
-local pName = Instance.new("TextLabel", StatsFrame)
-pName.Text = "Username: " .. LP.Name
-pName.Size = UDim2.new(0, 300, 0, 30); pName.Position = UDim2.new(0, 100, 0, 20)
-pName.BackgroundTransparency = 1; pName.TextColor3 = Color3.new(1, 1, 1); pName.TextSize = 18; pName.Font = "GothamBold"; pName.TextXAlignment = "Left"
-
--- عمر الحساب
-local pAge = Instance.new("TextLabel", StatsFrame)
-pAge.Text = "Account Age: " .. LP.AccountAge .. " Days"
-pAge.Size = UDim2.new(0, 300, 0, 30); pAge.Position = UDim2.new(0, 100, 0, 45)
-pAge.BackgroundTransparency = 1; pAge.TextColor3 = Color3.fromRGB(180, 180, 180); pAge.TextSize = 14; pAge.Font = "GothamMedium"; pAge.TextXAlignment = "Left"
-
--- [7] أزرار التنقل العلوية (🏠 و 📄)
-local function CreateNav(txt, xPos, callback)
-    local b = Instance.new("TextButton", Main)
-    b.Size = UDim2.new(0, 42, 0, 42)
-    b.Position = UDim2.new(1, xPos, 0, 15)
-    b.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-    b.Text = txt; b.TextColor3 = Color3.new(1, 1, 1); b.TextSize = 18
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 10)
-    b.MouseButton1Click:Connect(callback)
+local function CreateTab(name, x, isHome)
+    local b = Instance.new("TextButton", TabHolder)
+    b.Size = UDim2.new(0, 70, 1, 0); b.Position = UDim2.new(0, x, 0, 0); b.BackgroundTransparency = 1
+    b.Text = name; b.TextColor3 = isHome and MainColor or Color3.fromRGB(200, 200, 200); b.TextSize = 16; b.Font = "GothamBold"
     return b
 end
 
-CreateNav("🏠", -105, function() HomeP.Visible = true; SettingsP.Visible = false; ScriptP.Visible = false end)
-CreateNav("📄", -55, function() HomeP.Visible = false; SettingsP.Visible = false; ScriptP.Visible = true end)
+local HomeBtn = CreateTab("Home", 0, true)
+local PagesBtn = CreateTab("Pages", 80, false)
+local CreditsBtn = CreateTab("Credits", 160, false)
 
--- [8] نظام تحديث الألوان الحي
-local function UpdateUI()
-    local C = Color3.fromRGB(R, G, B)
-    Stroke.Color = C
-    Logo.Text = "N.X.R <font color='#" .. C:ToHex() .. "'> >>> </font>"
+-- [5] حاويات الصفحات
+local HomePage = Instance.new("Frame", Main); HomePage.Size = UDim2.new(1, -40, 1, -145); HomePage.Position = UDim2.new(0, 20, 0, 65); HomePage.BackgroundTransparency = 1; HomePage.Visible = true
+local PagesPage = Instance.new("Frame", Main); PagesPage.Size = HomePage.Size; PagesPage.Position = HomePage.Position; PagesPage.BackgroundTransparency = 1; PagesPage.Visible = false
+
+-- [6] تصميم الهوم (النصفين - Stats & Image)
+-- النصف الأيسر (Stats)
+local StatBox = Instance.new("Frame", HomePage); StatBox.Size = UDim2.new(0, 190, 1, 0); StatBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+Instance.new("UICorner", StatBox).CornerRadius = UDim.new(0, 12); local sS = Instance.new("UIStroke", StatBox); sS.Color = MainColor; sS.Thickness = 1.5
+
+local pImg = Instance.new("ImageLabel", StatBox); pImg.Size = UDim2.new(0, 75, 0, 75); pImg.Position = UDim2.new(0.5, -37, 0, 15); pImg.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"; Instance.new("UICorner", pImg).CornerRadius = UDim.new(1, 0)
+
+local function AddStat(txt, y, col)
+    local l = Instance.new("TextLabel", StatBox); l.Text = txt; l.Size = UDim2.new(1, -20, 0, 20); l.Position = UDim2.new(0, 10, 0, y)
+    l.BackgroundTransparency = 1; l.TextColor3 = col or Color3.new(1, 1, 1); l.TextSize = 12; l.Font = "GothamMedium"; l.TextXAlignment = "Left"
 end
+AddStat("USER: "..LP.Name:upper(), 105)
+AddStat("STATUS: ONLINE", 130, Color3.fromRGB(0, 255, 100))
+AddStat("VERSION: 4.0.0", 155)
+AddStat("N.X.R HUB ACTIVE", 185, MainColor)
 
--- [9] منزلقات الـ RGB المصلحة (Smooth Sliding)
-local function CreateSlider(name, col, order)
-    local f = Instance.new("Frame", SettingsP)
-    f.Size = UDim2.new(0, 270, 0, 45); f.Position = UDim2.new(0, 25, 0, 100 + (order * 55)); f.BackgroundColor3 = Color3.fromRGB(22, 22, 22); Instance.new("UICorner", f).CornerRadius = UDim.new(0, 10)
-    local bar = Instance.new("Frame", f); bar.Size = UDim2.new(0, 180, 0, 5); bar.Position = UDim2.new(0, 70, 0.5, -2); bar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    local dot = Instance.new("TextButton", bar); dot.Size = UDim2.new(0, 18, 0, 18); dot.Position = UDim2.new(0, 0, 0.5, -9); dot.BackgroundColor3 = col; dot.Text = ""; Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
-    
-    local Sliding = false
-    dot.MouseButton1Down:Connect(function() Sliding = true end)
-    
-    UIS.InputChanged:Connect(function(input)
-        if Sliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local Percent = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-            dot.Position = UDim2.new(Percent, -9, 0.5, -9)
-            local Val = math.floor(Percent * 255)
-            if name == "R" then R = Val elseif name == "G" then G = Val elseif name == "B" then B = Val end
-            UpdateUI()
-        end
-    end)
-    UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then Sliding = false end end)
+-- النصف الأيمن (ساحة الصورة)
+local ImageBox = Instance.new("Frame", HomePage); ImageBox.Size = UDim2.new(1, -210, 1, 0); ImageBox.Position = UDim2.new(0, 210, 0, 0); ImageBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+Instance.new("UICorner", ImageBox).CornerRadius = UDim.new(0, 12); local iS = Instance.new("UIStroke", ImageBox); iS.Color = MainColor; iS.Thickness = 1.5
+
+local PlaceholderText = Instance.new("TextLabel", ImageBox)
+PlaceholderText.Text = "IMAGE AREA\n(PLACEHOLDER)"; PlaceholderText.Size = UDim2.new(1,0,1,0); PlaceholderText.BackgroundTransparency = 1; PlaceholderText.TextColor3 = Color3.fromRGB(50,50,50); PlaceholderText.TextSize = 18; PlaceholderText.Font = "GothamBold"
+
+-- [7] الأزرار السفلية
+local function CreateBottom(name, x)
+    local b = Instance.new("TextButton", Main); b.Size = UDim2.new(0, 160, 0, 70); b.Position = UDim2.new(0, x, 1, -85); b.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    b.Text = name; b.TextColor3 = Color3.new(1, 1, 1); b.Font = "GothamBold"; b.TextSize = 14; Instance.new("UICorner", b).CornerRadius = UDim.new(0, 10)
+    Instance.new("UIStroke", b).Color = Color3.fromRGB(40, 40, 40)
+    return b
 end
+CreateBottom("CONFIG", 20)
+CreateBottom("SETTING", 195)
+CreateBottom("AD (إعلان)", 370)
 
-CreateSlider("R", Color3.new(1,0,0), 0)
-CreateSlider("G", Color3.new(0,1,0), 1)
-CreateSlider("B", Color3.new(0,0.6,1), 2)
+-- [8] شريط الزينة السفلي
+local DecoBar = Instance.new("Frame", Main); DecoBar.Size = UDim2.new(0, 150, 0, 4); DecoBar.Position = UDim2.new(0.5, -75, 1, -10); DecoBar.BackgroundColor3 = Color3.new(1,1,1); DecoBar.BackgroundTransparency = 0.6; Instance.new("UICorner", DecoBar).CornerRadius = UDim.new(1,0)
 
--- [10] الأزرار السفلية (CONFIG, SETTING, AD)
-local function AddBottom(name, xPos, callback)
-    local b = Instance.new("TextButton", HomeP)
-    b.Size = UDim2.new(0, 150, 0, 75)
-    b.Position = UDim2.new(0, xPos, 1, -105)
-    b.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    b.Text = name; b.TextColor3 = Color3.new(1, 1, 1); b.Font = "GothamBold"; b.TextSize = 11
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 12)
-    b.MouseButton1Click:Connect(callback)
-end
-
-AddBottom("CONFIG", 15, function() print("Config clicked") end)
-AddBottom("SETTING", 185, function() HomeP.Visible = false; SettingsP.Visible = true end)
-AddBottom("AD", 355, function() print("Ad clicked") end)
-
--- [11] الزر العائم NXR
-local Toggle = Instance.new("TextButton", Screen); Toggle.Size = UDim2.new(0, 55, 0, 55); Toggle.Position = UDim2.new(1, -70, 0, 20); Toggle.Text = "NXR"; Toggle.BackgroundColor3 = Color3.fromRGB(15, 15, 15); Toggle.TextColor3 = Color3.fromRGB(255, 0, 50); Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0); Toggle.Draggable = true
-Toggle.MouseButton1Click:Connect(function() Main.Visible = not Main.Visible end)
+print("Naxor V4: Integration Complete. No Errors.")
