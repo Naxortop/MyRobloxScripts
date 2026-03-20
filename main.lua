@@ -1,4 +1,4 @@
--- [[ NAXOR V7.7 - FIXED CAMERA DRAG & SPACING ]] --
+-- [[ NAXOR V7.8 - GUTS EDITION 2024 ]] --
 
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
@@ -6,13 +6,16 @@ local PlayerGui = LP:WaitForChild("PlayerGui")
 local UIS = game:GetService("UserInputService")
 local TS = game:GetService("TweenService")
 
-if PlayerGui:FindFirstChild("Naxor_Official_V5") then PlayerGui:FindFirstChild("Naxor_Official_V5"):Destroy() end
+-- تنظيف الشاشة من أي نسخة سابقة
+if PlayerGui:FindFirstChild("Naxor_Official_V5") then 
+    PlayerGui:FindFirstChild("Naxor_Official_V5"):Destroy() 
+end
 
 local MainColor = Color3.fromRGB(220, 220, 220)
 local Screen = Instance.new("ScreenGui", PlayerGui)
 Screen.Name = "Naxor_Official_V5"; Screen.ResetOnSpawn = false
 
--- [ وظيفة السحب الاحترافية ] --
+-- [ وظيفة السحب المصلحة لمنع تحرك الكاميرا ] --
 local function MakeDraggable(Frame, Handle)
     local Dragging, DragInput, DragStart, StartPos
     Handle.InputBegan:Connect(function(input)
@@ -46,7 +49,7 @@ local Main = Instance.new("Frame", Screen)
 Main.Size = UDim2.new(0, 560, 0, 390); Main.Position = UDim2.new(0.5, -280, 0.5, -195)
 Main.BackgroundColor3 = Color3.fromRGB(8, 8, 8); Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 15)
 local MainStroke = Instance.new("UIStroke", Main); MainStroke.Thickness = 2; MainStroke.Color = MainColor
-Main.Active = true -- هذا السطر يمنع الضغط من المرور للكاميرا
+Main.Active = true -- منع الكاميرا من التحرك
 
 local function ToggleUI()
     Main.Visible = not Main.Visible
@@ -54,13 +57,14 @@ local function ToggleUI()
 end
 ToggleBtn.MouseButton1Click:Connect(ToggleUI)
 
--- [ الهيدر والنافيجيشن ] --
+-- [ الهيدر ] --
 local Header = Instance.new("Frame", Main); Header.Size = UDim2.new(1, 0, 0, 65); Header.BackgroundTransparency = 1; Header.ZIndex = 10
 MakeDraggable(Main, Header)
 
 local Logo = Instance.new("TextLabel", Header); Logo.RichText = true; Logo.Text = "N.X.R <font color='#DCDCDC'>>>> </font>"; Logo.Size = UDim2.new(0, 150, 1, 0); Logo.Position = UDim2.new(0, 25, 0, 0); Logo.BackgroundTransparency = 1; Logo.TextColor3 = MainColor; Logo.TextSize = 20; Logo.Font = "GothamBold"; Logo.TextXAlignment = "Left"
 local CloseBtn = Instance.new("TextButton", Header); CloseBtn.Size = UDim2.new(0, 30, 0, 30); CloseBtn.Position = UDim2.new(1, -40, 0, 17); CloseBtn.BackgroundTransparency = 1; CloseBtn.Text = "X"; CloseBtn.TextColor3 = MainColor; CloseBtn.TextSize = 18; CloseBtn.Font = "GothamBold"; CloseBtn.MouseButton1Click:Connect(ToggleUI)
 
+-- [ النافيجيشن ] --
 local Nav = Instance.new("Frame", Header); Nav.Size = UDim2.new(0, 250, 1, 0); Nav.Position = UDim2.new(1, -300, 0, 0); Nav.BackgroundTransparency = 1; Nav.ZIndex = 12
 local Underline = Instance.new("Frame", Nav); Underline.Size = UDim2.new(0, 35, 0, 1.5); Underline.Position = UDim2.new(0, 15, 0, 45); Underline.BackgroundColor3 = MainColor; Underline.ZIndex = 13
 local Separator = Instance.new("Frame", Main); Separator.Size = UDim2.new(1, 0, 0, 1.5); Separator.Position = UDim2.new(0, 0, 0, 65); Separator.BackgroundColor3 = MainColor; Separator.BorderSizePixel = 0
@@ -81,7 +85,7 @@ local function CreateNavBtn(name, x, target)
 end
 CreateNavBtn("Home", 0, "Home"); CreateNavBtn("Pages", 75, "Pages"); CreateNavBtn("Credits", 150, "Credits")
 
--- [[ صفحة HOME ]] --
+-- [[ صفحة HOME - الهوية ]] --
 local IDCard = Instance.new("Frame", P.Home); IDCard.Size = UDim2.new(0, 210, 0, 210); IDCard.Position = UDim2.new(0, 25, 0, 25); IDCard.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Instance.new("UICorner", IDCard).CornerRadius = UDim.new(0, 10); local IDS = Instance.new("UIStroke", IDCard); IDS.Color = MainColor; IDS.Thickness = 1.8
 local pImg = Instance.new("ImageLabel", IDCard); pImg.Size = UDim2.new(0, 60, 0, 60); pImg.Position = UDim2.new(0, 15, 0, 15); pImg.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"; Instance.new("UICorner", pImg).CornerRadius = UDim.new(0, 8)
 local DName = Instance.new("TextLabel", IDCard); DName.Text = LP.DisplayName; DName.Size = UDim2.new(0, 110, 0, 20); DName.Position = UDim2.new(0, 85, 0, 20); DName.BackgroundTransparency = 1; DName.TextColor3 = Color3.new(1, 1, 1); DName.TextSize = 12; DName.Font = "GothamBold"; DName.TextXAlignment = "Left"
@@ -104,8 +108,20 @@ local function CreateStyledBtn(name, pos, size, parent)
 end
 CreateStyledBtn("CONFIG", UDim2.new(0, 25, 0, 255), UDim2.new(0, 100, 0, 45), P.Home)
 CreateStyledBtn("SETTING", UDim2.new(0, 135, 0, 255), UDim2.new(0, 100, 0, 45), P.Home)
+
+-- [[ مربع الإعلان - تم دمج صورة GUTS هنا ]] --
 local PicBox = Instance.new("Frame", P.Home); PicBox.Size = UDim2.new(1, -275, 0, 210); PicBox.Position = UDim2.new(0, 250, 0, 25); PicBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Instance.new("UICorner", PicBox).CornerRadius = UDim.new(0, 10); local PIS = Instance.new("UIStroke", PicBox); PIS.Color = MainColor; PIS.Thickness = 1.8
-CreateStyledBtn("ADVERTISEMENT (إعلان)", UDim2.new(0, 250, 0, 255), UDim2.new(1, -275, 0, 45), P.Home)
+PicBox.ClipsDescendants = true -- تأكيد بقاء الصورة داخل الإطار
+
+local GutsImage = Instance.new("ImageLabel", PicBox)
+GutsImage.Size = UDim2.new(1, 0, 1, 0) -- ملء المربع بالكامل
+GutsImage.Position = UDim2.new(0, 0, 0, 0)
+GutsImage.BackgroundTransparency = 1
+GutsImage.Image = "rbxassetid://16762391696" -- تم رفع الصورة على روبلوكس للاستخدام المباشر
+GutsImage.ScaleType = Enum.ScaleType.Crop -- لضمان ظهور الصورة بشكل متناسق وبدون تمطيط
+GutsImage.ZIndex = 2 -- تأكد أنها خلف الإطار وأمام الخلفية السوداء
+
+local AdBtn = CreateStyledBtn("ADVERTISEMENT (إعلان)", UDim2.new(0, 250, 0, 255), UDim2.new(1, -275, 0, 45), P.Home)
 
 -- [ الأنظمة المستمرة ] --
 task.spawn(function()
