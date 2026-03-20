@@ -1,4 +1,4 @@
--- [[ NAXOR V11.0 - THE ULTIMATE MASTERPIECE ]] --
+-- [[ NAXOR V11.1 - FIXED & TESTED ]] --
 
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
@@ -6,8 +6,10 @@ local PlayerGui = LP:WaitForChild("PlayerGui")
 local UIS = game:GetService("UserInputService")
 local TS = game:GetService("TweenService")
 
--- تنظيف النسخ القديمة
-if PlayerGui:FindFirstChild("Naxor_Official_V5") then PlayerGui.Naxor_Official_V5:Destroy() end
+-- تنظيف النسخة القديمة تماماً
+if PlayerGui:FindFirstChild("Naxor_Official_V5") then 
+    PlayerGui.Naxor_Official_V5:Destroy() 
+end
 
 local MainColor = Color3.fromRGB(220, 220, 220)
 local Screen = Instance.new("ScreenGui", PlayerGui)
@@ -51,14 +53,20 @@ local function ToggleUI()
 end
 ToggleBtn.MouseButton1Click:Connect(ToggleUI)
 
--- [ الهيدر والنافيجيشن ] --
+-- [ الهيدر ] --
 local Header = Instance.new("Frame", Main); Header.Size = UDim2.new(1, 0, 0, 65); Header.BackgroundTransparency = 1; Header.ZIndex = 10
 MakeDraggable(Main, Header)
 local Logo = Instance.new("TextLabel", Header); Logo.RichText = true; Logo.Text = "N.X.R <font color='#DCDCDC'>>>> </font>"; Logo.Size = UDim2.new(0, 150, 1, 0); Logo.Position = UDim2.new(0, 25, 0, 0); Logo.BackgroundTransparency = 1; Logo.TextColor3 = MainColor; Logo.TextSize = 20; Logo.Font = "GothamBold"; Logo.TextXAlignment = "Left"
 local CloseBtn = Instance.new("TextButton", Header); CloseBtn.Size = UDim2.new(0, 30, 0, 30); CloseBtn.Position = UDim2.new(1, -40, 0, 17); CloseBtn.BackgroundTransparency = 1; CloseBtn.Text = "X"; CloseBtn.TextColor3 = MainColor; CloseBtn.TextSize = 18; CloseBtn.Font = "GothamBold"; CloseBtn.MouseButton1Click:Connect(ToggleUI)
 
+-- [ النافيجيشن ] --
 local Nav = Instance.new("Frame", Header); Nav.Size = UDim2.new(0, 250, 1, 0); Nav.Position = UDim2.new(1, -300, 0, 0); Nav.BackgroundTransparency = 1
 local Underline = Instance.new("Frame", Nav); Underline.Size = UDim2.new(0, 35, 0, 1.5); Underline.Position = UDim2.new(0, 15, 0, 45); Underline.BackgroundColor3 = MainColor; Underline.ZIndex = 11
+
+-- [ نظام الصفحات ] --
+local PagesCont = Instance.new("Frame", Main); PagesCont.Size = UDim2.new(1, 0, 1, -65); PagesCont.Position = UDim2.new(0, 0, 0, 65); PagesCont.BackgroundTransparency = 1
+local P = { Home = Instance.new("Frame", PagesCont), Pages = Instance.new("Frame", PagesCont), Credits = Instance.new("Frame", PagesCont) }
+for name, frame in pairs(P) do frame.Size = UDim2.new(1, 0, 1, 0); frame.BackgroundTransparency = 1; frame.Visible = (name == "Home") end
 
 local function CreateNavBtn(name, x, target)
     local b = Instance.new("TextButton", Nav); b.Size = UDim2.new(0, 70, 1, 0); b.Position = UDim2.new(0, x, 0, 0); b.BackgroundTransparency = 1; b.Text = name; b.TextColor3 = Color3.fromRGB(180, 180, 180); b.Font = "GothamMedium"; b.TextSize = 12
@@ -75,45 +83,37 @@ CreateNavBtn("Home", 0, "Home"); CreateNavBtn("Pages", 75, "Pages"); CreateNavBt
 local Separator = Instance.new("Frame", Main)
 Separator.Size = UDim2.new(1, 0, 0, 1); Separator.Position = UDim2.new(0, 0, 0, 65); Separator.BackgroundColor3 = Color3.fromRGB(40, 40, 40); Separator.BorderSizePixel = 0; Separator.ZIndex = 12
 
--- [ نظام الصفحات ] --
-local PagesCont = Instance.new("Frame", Main); PagesCont.Size = UDim2.new(1, 0, 1, -65); PagesCont.Position = UDim2.new(0, 0, 0, 65); PagesCont.BackgroundTransparency = 1
-local P = { Home = Instance.new("Frame", PagesCont), Pages = Instance.new("Frame", PagesCont), Credits = Instance.new("Frame", PagesCont) }
-for name, frame in pairs(P) do frame.Size = UDim2.new(1, 0, 1, 0); frame.BackgroundTransparency = 1; frame.Visible = (name == "Home") end
-
--- [[ محتوى صفحة HOME (البطاقة الذكية) ]] --
+-- [[ محتوى صفحة HOME - البطاقة ]] --
 local IDCard = Instance.new("Frame", P.Home); IDCard.Size = UDim2.new(0, 210, 0, 210); IDCard.Position = UDim2.new(0, 25, 0, 25); IDCard.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Instance.new("UICorner", IDCard).CornerRadius = UDim.new(0, 10)
 local IDS = Instance.new("UIStroke", IDCard); IDS.Color = Color3.fromRGB(50, 50, 50); IDS.Thickness = 1.2
 
--- صورة اللاعب
-local pImg = Instance.new("ImageLabel", IDCard); pImg.Size = UDim2.new(0, 60, 0, 60); pImg.Position = UDim2.new(0, 15, 0, 15); pImg.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"; Instance.new("UICorner", pImg).CornerRadius = UDim.new(0, 8)
+-- صورة اللاعب (تم التصحيح)
+local pImg = Instance.new("ImageLabel", IDCard); pImg.Size = UDim2.new(0, 60, 0, 60); pImg.Position = UDim2.new(0, 15, 0, 15); pImg.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"; pImg.BackgroundTransparency = 1; Instance.new("UICorner", pImg).CornerRadius = UDim.new(0, 8)
 
--- [[ النقطه الخضراء والحالة ]] --
-local Dot = Instance.new("Frame", IDCard); Dot.Size = UDim2.new(0, 8, 0, 8); Dot.Position = UDim2.new(0, 18, 0, 80); Dot.BackgroundColor3 = Color3.fromRGB(0, 255, 100); Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
-local DotGlow = Instance.new("UIStroke", Dot); DotGlow.Color = Color3.fromRGB(0, 255, 100); DotGlow.Thickness = 1.5
-local StatusText = Instance.new("TextLabel", IDCard); StatusText.Text = "Active Status"; StatusText.Position = UDim2.new(0, 32, 0, 74); StatusText.Size = UDim2.new(0, 100, 0, 20); StatusText.BackgroundTransparency = 1; StatusText.TextColor3 = Color3.fromRGB(0, 255, 100); StatusText.TextSize = 8; StatusText.Font = "GothamBold"; StatusText.TextXAlignment = "Left"
+-- النقطة الخضراء
+local Dot = Instance.new("Frame", IDCard); Dot.Size = UDim2.new(0, 7, 0, 7); Dot.Position = UDim2.new(0, 15, 0, 81); Dot.BackgroundColor3 = Color3.fromRGB(0, 255, 100); Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
+local StatusT = Instance.new("TextLabel", IDCard); StatusT.Text = "Active Status"; StatusT.Position = UDim2.new(0, 28, 0, 74); StatusT.Size = UDim2.new(0, 80, 0, 20); StatusT.TextColor3 = Color3.fromRGB(0, 255, 100); StatusT.TextSize = 8; StatusT.Font = "GothamBold"; StatusT.BackgroundTransparency = 1; StatusT.TextXAlignment = "Left"
 
 -- الاسم والرتبة
 local DName = Instance.new("TextLabel", IDCard); DName.Text = LP.DisplayName; DName.Position = UDim2.new(0, 85, 0, 18); DName.Size = UDim2.new(0, 110, 0, 20); DName.TextColor3 = Color3.new(1, 1, 1); DName.Font = "GothamBold"; DName.TextSize = 12; DName.BackgroundTransparency = 1; DName.TextXAlignment = "Left"
-local RankTag = Instance.new("Frame", IDCard); RankTag.Size = UDim2.new(0, 65, 0, 18); RankTag.Position = UDim2.new(0, 85, 0, 42); RankTag.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", RankTag).CornerRadius = UDim.new(0, 4); local RS = Instance.new("UIStroke", RankTag); RS.Color = MainColor; RS.Thickness = 1
+local RankTag = Instance.new("Frame", IDCard); RankTag.Size = UDim2.new(0, 60, 0, 16); RankTag.Position = UDim2.new(0, 85, 0, 42); RankTag.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", RankTag).CornerRadius = UDim.new(0, 4); local RS = Instance.new("UIStroke", RankTag); RS.Color = MainColor; RS.Thickness = 1
 local RT = Instance.new("TextLabel", RankTag); RT.Size = UDim2.new(1, 0, 1, 0); RT.Text = "OWNER"; RT.TextColor3 = MainColor; RT.TextSize = 8; RT.Font = "GothamBold"; RT.BackgroundTransparency = 1
 
--- المعلومات
+-- معلومات إضافية
 local function AddInfo(t, y, c)
     local l = Instance.new("TextLabel", IDCard); l.Text = t; l.Size = UDim2.new(1, -30, 0, 20); l.Position = UDim2.new(0, 15, 0, y); l.BackgroundTransparency = 1; l.TextColor3 = c or Color3.fromRGB(200, 200, 200); l.TextSize = 9; l.Font = "GothamMedium"; l.TextXAlignment = "Left"; return l
 end
-local Device = (UIS.TouchEnabled and not UIS.KeyboardEnabled) and "Mobile" or (UIS.GamepadEnabled and "Console" or "PC")
-AddInfo("Device: "..Device, 100); AddInfo("Account Age: " .. LP.AccountAge .. " Days", 118); AddInfo("User ID: " .. LP.UserId, 136)
+local Dev = (UIS.TouchEnabled and not UIS.KeyboardEnabled) and "Mobile" or "PC"
+AddInfo("Device: "..Dev, 100); AddInfo("Account Age: "..LP.AccountAge.." Days", 118); AddInfo("User ID: "..LP.UserId, 136)
 
--- [[ عدد المستخدمين والوقت ]] --
-local UserCount = AddInfo("Users: 1,402", 165, Color3.fromRGB(150,150,150))
-local PlayTimeLabel = AddInfo("PlayTime: 00:00:00", 185, MainColor); PlayTimeLabel.Font = "GothamBold"
+local UserCount = AddInfo("Users: 1,402", 162, Color3.fromRGB(150, 150, 150))
+local PlayTimeLabel = AddInfo("PlayTime: 00:00:00", 182, MainColor); PlayTimeLabel.Font = "GothamBold"
 
--- [ الأزرار ومستطيل الإعلانات ] --
+-- [ الأزرار والوقت ] --
 local function CreateStyledBtn(name, pos, size, parent)
     local btn = Instance.new("TextButton", parent); btn.Size = size; btn.Position = pos; btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15); btn.Text = name; btn.TextColor3 = Color3.new(1, 1, 1); btn.Font = "GothamBold"; btn.TextSize = 11; Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8); local s = Instance.new("UIStroke", btn); s.Color = Color3.fromRGB(40, 40, 40); s.Thickness = 1; return btn
 end
 CreateStyledBtn("CONFIG", UDim2.new(0, 25, 0, 255), UDim2.new(0, 100, 0, 45), P.Home); CreateStyledBtn("SETTING", UDim2.new(0, 135, 0, 255), UDim2.new(0, 100, 0, 45), P.Home); CreateStyledBtn("ADVERTISEMENT (إعلان)", UDim2.new(0, 250, 0, 255), UDim2.new(1, -275, 0, 45), P.Home)
 local PicBox = Instance.new("Frame", P.Home); PicBox.Size = UDim2.new(1, -275, 0, 210); PicBox.Position = UDim2.new(0, 250, 0, 25); PicBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Instance.new("UICorner", PicBox).CornerRadius = UDim.new(0, 10); local PS = Instance.new("UIStroke", PicBox); PS.Color = Color3.fromRGB(40, 40, 40); PS.Thickness = 1
 
--- [ تحديث الوقت ] --
-local ST = os.time(); task.spawn(function() while task.wait(1) do local E = os.time()-ST; PlayTimeLabel.Text = string.format("PlayTime: %02d:%02d:%02d", math.floor(E/3600), math.floor((E%3600)/60), E%60) end end)
+local ST = os.time(); task.spawn(function
