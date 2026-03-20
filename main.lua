@@ -1,93 +1,183 @@
-local LP = game:GetService("Players").LocalPlayer
-local PG = LP:WaitForChild("PlayerGui")
+-- [[ NAXOR V4 - FULL SOURCE CODE - NO ABBREVIATIONS ]] --
 
--- تنظيف الشاشة
-if PG:FindFirstChild("Naxor_Final_Neon") then PG.Naxor_Final_Neon:Destroy() end
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local PlayerGui = LP:WaitForChild("PlayerGui")
 
-local Screen = Instance.new("ScreenGui", PG)
-Screen.Name = "Naxor_Final_Neon"
-Screen.ResetOnSpawn = false
-
--- ⬛ الواجهة الرئيسية
-local Main = Instance.new("Frame", Screen)
-Main.Size = UDim2.new(0, 580, 0, 400)
-Main.Position = UDim2.new(0.5, -290, 0.5, -200)
-Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-Main.BorderSizePixel = 0
-Main.Active = true
-Main.Draggable = true 
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 15)
-
--- ✨ إرجاع النيون (الايطار الأحمر المشع)
-local MainStroke = Instance.new("UIStroke", Main)
-MainStroke.Color = Color3.fromRGB(255, 0, 50)
-MainStroke.Thickness = 2.5 -- خليته سميك شوي عشان يبين نيون
-MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-
--- 🔝 العنوان: N.X.R (بدون تضليل نهائياً)
-local Logo = Instance.new("TextLabel", Main)
-Logo.Text = "N.X.R <font color='#FF0032'>>>> </font>"
-Logo.RichText = true
-Logo.Size = UDim2.new(0, 180, 0, 60)
-Logo.Position = UDim2.new(0, 20, 0, 5)
-Logo.BackgroundTransparency = 1 -- شفاف 100%
-Logo.TextColor3 = Color3.new(1, 1, 1)
-Logo.TextSize = 28
-Logo.Font = Enum.Font.GothamBold
-Logo.TextXAlignment = "Left"
-
--- 👤 صورة تعريف اللاعب (رجعت ومثبتة)
-local Avatar = Instance.new("ImageLabel", Main)
-Avatar.Size = UDim2.new(0, 70, 0, 70)
-Avatar.Position = UDim2.new(0, 25, 0, 75)
-Avatar.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
-Avatar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Avatar.BorderSizePixel = 0
-Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1, 0)
--- ايطار نيون خفيف للصورة
-local AvStroke = Instance.new("UIStroke", Avatar)
-AvStroke.Color = Color3.fromRGB(255, 0, 50)
-AvStroke.Thickness = 1.5
-
--- 🏷️ بيانات اللاعب (طبيعية وبدون خلفية)
-local Info = Instance.new("TextLabel", Main)
-Info.Size = UDim2.new(0, 180, 0, 100)
-Info.Position = UDim2.new(0, 25, 0, 155)
-Info.BackgroundTransparency = 1
-Info.TextColor3 = Color3.new(1, 1, 1)
-Info.TextSize = 14
-Info.Font = Enum.Font.GothamBold
-Info.TextXAlignment = "Left"
-Info.Text = "USER: "..LP.Name:upper().."\nSTATUS: ONLINE\nVERSION: 4.0.0\nN.X.R ACTIVE"
-
--- 🖼️ المربع الكبير (Center Box)
-local CenterBox = Instance.new("Frame", Main)
-CenterBox.Size = UDim2.new(0, 335, 0, 210)
-CenterBox.Position = UDim2.new(0, 220, 0, 75)
-CenterBox.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-Instance.new("UICorner", CenterBox)
-local BoxStroke = Instance.new("UIStroke", CenterBox)
-BoxStroke.Color = Color3.fromRGB(255, 0, 50)
-BoxStroke.Thickness = 1
-
--- 🔘 الأزرار السفلية (بايطار نيون)
-local function CreateBtn(name, x)
-    local b = Instance.new("TextButton", Main)
-    b.Size = UDim2.new(0, 170, 0, 80)
-    b.Position = UDim2.new(0, x, 0, 300)
-    b.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    b.Text = name
-    b.TextColor3 = Color3.new(1, 1, 1)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 16
-    Instance.new("UICorner", b)
-    local bs = Instance.new("UIStroke", b)
-    bs.Color = Color3.fromRGB(255, 0, 50)
-    bs.Thickness = 1.5
+-- تنظيف النسخ القديمة تماماً
+if PlayerGui:FindFirstChild("Naxor_Detailed_System") then
+    PlayerGui.Naxor_Detailed_System:Destroy()
 end
 
-CreateBtn("CONFIG", 20)
-CreateBtn("SETTING", 205)
-CreateBtn("AD (إعلان)", 390)
+-- إنشاء حاوية الشاشة (ScreenGui)
+local Screen = Instance.new("ScreenGui")
+Screen.Name = "Naxor_Detailed_System"
+Screen.Parent = PlayerGui
+Screen.ResetOnSpawn = false
+Screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Screen.DisplayOrder = 9999 -- لضمان بقائه فوق كل شيء
 
-print("Naxor V4: Neon Restored & Text Cleaned!")
+-- ⬛ اللوحة الرئيسية (Main Frame)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = Screen
+MainFrame.Size = UDim2.new(0, 580, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -290, 0.5, -200)
+MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = true
+
+-- زوايا مستديرة للوحة الرئيسية
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 15)
+MainCorner.Parent = MainFrame
+
+-- ✨ إطار نيون أحمر (Main Stroke)
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Name = "MainStroke"
+MainStroke.Parent = MainFrame
+MainStroke.Color = Color3.fromRGB(255, 0, 50)
+MainStroke.Thickness = 2.5
+MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- 🔝 العنوان العلوي (N.X.R)
+local LogoLabel = Instance.new("TextLabel")
+LogoLabel.Name = "LogoLabel"
+LogoLabel.Parent = MainFrame
+LogoLabel.Text = "N.X.R <font color='#FF0032'>>>> </font>"
+LogoLabel.RichText = true
+LogoLabel.Size = UDim2.new(0, 200, 0, 60)
+LogoLabel.Position = UDim2.new(0, 20, 0, 5)
+LogoLabel.BackgroundTransparency = 1 -- شفافية تامة لإزالة تضليل الحروف
+LogoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+LogoLabel.TextSize = 30
+LogoLabel.Font = Enum.Font.GothamBold
+LogoLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+-- 👤 قسم صورة اللاعب (Avatar Image)
+local AvatarImage = Instance.new("ImageLabel")
+AvatarImage.Name = "AvatarImage"
+AvatarImage.Parent = MainFrame
+AvatarImage.Size = UDim2.new(0, 75, 0, 75)
+AvatarImage.Position = UDim2.new(0, 25, 0, 80)
+AvatarImage.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
+AvatarImage.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+AvatarImage.BorderSizePixel = 0
+
+local AvatarCorner = Instance.new("UICorner")
+AvatarCorner.CornerRadius = UDim.new(1, 0)
+AvatarCorner.Parent = AvatarImage
+
+local AvatarStroke = Instance.new("UIStroke")
+AvatarStroke.Parent = AvatarImage
+AvatarStroke.Color = Color3.fromRGB(255, 0, 50)
+AvatarStroke.Thickness = 1.5
+
+-- 🏷️ قسم معلومات اللاعب (Info Label)
+local InfoLabel = Instance.new("TextLabel")
+InfoLabel.Name = "InfoLabel"
+InfoLabel.Parent = MainFrame
+InfoLabel.Size = UDim2.new(0, 180, 0, 100)
+InfoLabel.Position = UDim2.new(0, 25, 0, 165)
+InfoLabel.BackgroundTransparency = 1 -- شفافية تامة
+InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+InfoLabel.TextSize = 14
+InfoLabel.Font = Enum.Font.GothamBold
+InfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+InfoLabel.Text = "USER: " .. LP.Name:upper() .. "\nSTATUS: ONLINE\nVERSION: 4.0.0\nPLATFORM: MOBILE"
+
+-- 🖼️ المربع المركزي الكبير (Center Box)
+local CenterBox = Instance.new("Frame")
+CenterBox.Name = "CenterBox"
+CenterBox.Parent = MainFrame
+CenterBox.Size = UDim2.new(0, 335, 0, 215)
+CenterBox.Position = UDim2.new(0, 220, 0, 75)
+CenterBox.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+CenterBox.BorderSizePixel = 0
+
+local CenterCorner = Instance.new("UICorner")
+CenterCorner.CornerRadius = UDim.new(0, 10)
+CenterCorner.Parent = CenterBox
+
+local CenterStroke = Instance.new("UIStroke")
+CenterStroke.Parent = CenterBox
+CenterStroke.Color = Color3.fromRGB(255, 0, 50)
+CenterStroke.Thickness = 1
+
+-- 🔘 الأزرار السفلية الثلاثة (CONFIG, SETTING, AD)
+local ConfigBtn = Instance.new("TextButton")
+ConfigBtn.Name = "ConfigBtn"
+ConfigBtn.Parent = MainFrame
+ConfigBtn.Size = UDim2.new(0, 175, 0, 80)
+ConfigBtn.Position = UDim2.new(0, 15, 0, 305)
+ConfigBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ConfigBtn.Text = "CONFIG"
+ConfigBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConfigBtn.Font = Enum.Font.GothamBold
+ConfigBtn.TextSize = 16
+Instance.new("UICorner", ConfigBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", ConfigBtn).Color = Color3.fromRGB(255, 0, 50)
+
+local SettingBtn = Instance.new("TextButton")
+SettingBtn.Name = "SettingBtn"
+SettingBtn.Parent = MainFrame
+SettingBtn.Size = UDim2.new(0, 175, 0, 80)
+SettingBtn.Position = UDim2.new(0, 205, 0, 305)
+SettingBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+SettingBtn.Text = "SETTING"
+SettingBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SettingBtn.Font = Enum.Font.GothamBold
+SettingBtn.TextSize = 16
+Instance.new("UICorner", SettingBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", SettingBtn).Color = Color3.fromRGB(255, 0, 50)
+
+local AdBtn = Instance.new("TextButton")
+AdBtn.Name = "AdBtn"
+AdBtn.Parent = MainFrame
+AdBtn.Size = UDim2.new(0, 175, 0, 80)
+AdBtn.Position = UDim2.new(0, 395, 0, 305)
+AdBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+AdBtn.Text = "AD (ADS)"
+AdBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+AdBtn.Font = Enum.Font.GothamBold
+AdBtn.TextSize = 16
+Instance.new("UICorner", AdBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", AdBtn).Color = Color3.fromRGB(255, 0, 50)
+
+-- 🔴🔴 الزر العائم (Toggle Button) - الزاوية اليمنى العلوية 🔴🔴
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = Screen
+ToggleButton.Size = UDim2.new(0, 60, 0, 60)
+-- التموضع أقصى اليمين من الأعلى
+ToggleButton.Position = UDim2.new(1, -70, 0, 20)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+ToggleButton.Text = "NXR"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 0, 50)
+ToggleButton.TextSize = 18
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.Active = true
+ToggleButton.Draggable = true
+ToggleButton.ZIndex = 10000
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(1, 0)
+ToggleCorner.Parent = ToggleButton
+
+local ToggleStroke = Instance.new("UIStroke")
+ToggleStroke.Parent = ToggleButton
+ToggleStroke.Color = Color3.fromRGB(255, 0, 50)
+ToggleStroke.Thickness = 3
+
+-- وظيفة التبديل (فتح وإغلاق القائمة)
+ToggleButton.MouseButton1Click:Connect(function()
+    if MainFrame.Visible == true then
+        MainFrame.Visible = false
+    else
+        MainFrame.Visible = true
+    end
+end)
+
+print("Naxor V4: Full Detailed Script Loaded Successfully.")
