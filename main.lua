@@ -1,148 +1,236 @@
--- [[ NAXOR V4 - PRECISE REPLICA VERSION ]] --
+-- [[ NAXOR V4 - FULL DETAILED REPLICA - NO SHORTCUTS ]] --
 
+-- [1] تعريف الخدمات الأساسية (Services)
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local PlayerGui = LP:WaitForChild("PlayerGui")
 
--- تنظيف النسخ القديمة
-if PlayerGui:FindFirstChild("NaxorFinal") then
-    PlayerGui.NaxorFinal:Destroy()
+-- [2] تنظيف النسخ القديمة لضمان عدم تداخل الواجهات
+if PlayerGui:FindFirstChild("Naxor_System_V4") then
+    PlayerGui.Naxor_System_V4:Destroy()
 end
 
-local Screen = Instance.new("ScreenGui")
-Screen.Name = "NaxorFinal"
-Screen.Parent = PlayerGui
-Screen.ResetOnSpawn = false
-Screen.DisplayOrder = 9999
+-- [3] إنشاء حاوية الشاشة الرئيسية (ScreenGui)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Naxor_System_V4"
+ScreenGui.Parent = PlayerGui
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.DisplayOrder = 99999
 
--- ⬛ اللوحة الرئيسية (الخلفية السوداء)
-local Main = Instance.new("Frame")
-Main.Name = "Main"
-Main.Parent = Screen
-Main.Size = UDim2.new(0, 600, 0, 420)
-Main.Position = UDim2.new(0.5, -300, 0.5, -210)
-Main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-Main.BorderSizePixel = 0
-Main.Active = true
-Main.Draggable = true 
+-- [4] إنشاء اللوحة السوداء الرئيسية (Main Frame)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.Size = UDim2.new(0, 600, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -300, 0.5, -210)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = true
 
-local MainCorner = Instance.new("UICorner", Main)
+local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 15)
+MainCorner.Parent = MainFrame
 
-local MainStroke = Instance.new("UIStroke", Main)
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Name = "MainStroke"
+MainStroke.Parent = MainFrame
 MainStroke.Color = Color3.fromRGB(255, 0, 50)
 MainStroke.Thickness = 2.5
+MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
--- 🔝 العنوان: N.X.R >>> (بدون تضليل)
-local Logo = Instance.new("TextLabel")
-Logo.Parent = Main
-Logo.Text = "N.X.R <font color='#FF0032'>>>> </font>"
-Logo.RichText = true
-Logo.Size = UDim2.new(0, 200, 0, 60)
-Logo.Position = UDim2.new(0, 25, 0, 10)
-Logo.BackgroundTransparency = 1
-Logo.TextColor3 = Color3.new(1, 1, 1)
-Logo.TextSize = 28
-Logo.Font = Enum.Font.GothamBold
-Logo.TextXAlignment = "Left"
+-- [5] العنوان العلوي (N.X.R >>>) بدون تضليل
+local LogoLabel = Instance.new("TextLabel")
+LogoLabel.Name = "LogoLabel"
+LogoLabel.Parent = MainFrame
+LogoLabel.Text = "N.X.R <font color='#FF0032'>>>> </font>"
+LogoLabel.RichText = true
+LogoLabel.Size = UDim2.new(0, 200, 0, 60)
+LogoLabel.Position = UDim2.new(0, 25, 0, 10)
+LogoLabel.BackgroundTransparency = 1 -- شفاف تماماً لإزالة تضليل الحروف
+LogoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+LogoLabel.TextSize = 28
+LogoLabel.Font = Enum.Font.GothamBold
+LogoLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- 👤 صورة اللاعب
-local Avatar = Instance.new("ImageLabel")
-Avatar.Parent = Main
-Avatar.Size = UDim2.new(0, 70, 0, 70)
-Avatar.Position = UDim2.new(0, 25, 0, 80)
-Avatar.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
-Avatar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Instance.new("UICorner", Avatar).CornerRadius = UDim.new(0, 10)
+-- [6] التبويبات العلوية (Tabs: Home, Pages, Credits)
+-- تبويب Home
+local TabHome = Instance.new("TextButton")
+TabHome.Name = "TabHome"
+TabHome.Parent = MainFrame
+TabHome.Text = "Home"
+TabHome.Size = UDim2.new(0, 70, 0, 50)
+TabHome.Position = UDim2.new(1, -260, 0, 10)
+TabHome.BackgroundTransparency = 1
+TabHome.TextColor3 = Color3.fromRGB(255, 0, 50)
+TabHome.TextSize = 15
+TabHome.Font = Enum.Font.GothamBold
 
--- 🟥 مستطيل STATE (بجانب الصورة)
-local StateBox = Instance.new("Frame")
-StateBox.Parent = Main
-StateBox.Size = UDim2.new(0, 90, 0, 35)
-StateBox.Position = UDim2.new(0, 105, 0, 85)
-StateBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Instance.new("UICorner", StateBox).CornerRadius = UDim.new(0, 5)
+-- تبويب Pages
+local TabPages = Instance.new("TextButton")
+TabPages.Name = "TabPages"
+TabPages.Parent = MainFrame
+TabPages.Text = "Pages"
+TabPages.Size = UDim2.new(0, 70, 0, 50)
+TabPages.Position = UDim2.new(1, -180, 0, 10)
+TabPages.BackgroundTransparency = 1
+TabPages.TextColor3 = Color3.fromRGB(150, 150, 150)
+TabPages.TextSize = 15
+TabPages.Font = Enum.Font.GothamBold
 
-local StateText = Instance.new("TextLabel")
-StateText.Parent = StateBox
-StateText.Text = "STATE"
-StateText.Size = UDim2.new(1, 0, 1, 0)
-StateText.BackgroundTransparency = 1
-StateText.TextColor3 = Color3.fromRGB(255, 0, 50)
-StateText.TextSize = 14
-StateText.Font = Enum.Font.GothamBold
+-- تبويب Credits
+local TabCredits = Instance.new("TextButton")
+TabCredits.Name = "TabCredits"
+TabCredits.Parent = MainFrame
+TabCredits.Text = "Credits"
+TabCredits.Size = UDim2.new(0, 70, 0, 50)
+TabCredits.Position = UDim2.new(1, -100, 0, 10)
+TabCredits.BackgroundTransparency = 1
+TabCredits.TextColor3 = Color3.fromRGB(150, 150, 150)
+TabCredits.TextSize = 15
+TabCredits.Font = Enum.Font.GothamBold
 
--- 🏷️ معلومات اللاعب (تحت الصورة)
-local Info = Instance.new("TextLabel")
-Info.Parent = Main
-Info.Size = UDim2.new(0, 200, 0, 120)
-Info.Position = UDim2.new(0, 25, 0, 160)
-Info.BackgroundTransparency = 1
-Info.TextColor3 = Color3.new(1, 1, 1)
-Info.TextSize = 13
-Info.Font = Enum.Font.GothamBold
-Info.TextXAlignment = "Left"
-Info.LineHeight = 1.8
-Info.Text = "USER: "..LP.Name:upper().."\nSTATUS: ONLINE\nVERSION: 4.0.0\nN.X.R HUB ACTIVE"
+-- [7] قسم صورة اللاعب (Avatar Image)
+local AvatarImage = Instance.new("ImageLabel")
+AvatarImage.Name = "AvatarImage"
+AvatarImage.Parent = MainFrame
+AvatarImage.Size = UDim2.new(0, 75, 0, 75)
+AvatarImage.Position = UDim2.new(0, 25, 0, 85)
+AvatarImage.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
+AvatarImage.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+AvatarImage.BorderSizePixel = 0
 
--- 🖼️ المربع المركزي (المنطقة الكبيرة)
+local AvatarCorner = Instance.new("UICorner")
+AvatarCorner.CornerRadius = UDim.new(0, 10)
+AvatarCorner.Parent = AvatarImage
+
+-- [8] مستطيل STATE (بجانب الصورة)
+local StateFrame = Instance.new("Frame")
+StateFrame.Name = "StateFrame"
+StateFrame.Parent = MainFrame
+StateFrame.Size = UDim2.new(0, 95, 0, 35)
+StateFrame.Position = UDim2.new(0, 110, 0, 90)
+StateFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+StateFrame.BorderSizePixel = 0
+
+local StateCorner = Instance.new("UICorner")
+StateCorner.CornerRadius = UDim.new(0, 5)
+StateCorner.Parent = StateFrame
+
+local StateLabel = Instance.new("TextLabel")
+StateLabel.Name = "StateLabel"
+StateLabel.Parent = StateFrame
+StateLabel.Text = "STATE"
+StateLabel.Size = UDim2.new(1, 0, 1, 0)
+StateLabel.BackgroundTransparency = 1
+StateLabel.TextColor3 = Color3.fromRGB(255, 0, 50)
+StateLabel.TextSize = 14
+StateLabel.Font = Enum.Font.GothamBold
+
+-- [9] نصوص معلومات اللاعب (Info Labels) تحت الصورة
+local InfoLabel = Instance.new("TextLabel")
+InfoLabel.Name = "InfoLabel"
+InfoLabel.Parent = MainFrame
+InfoLabel.Size = UDim2.new(0, 200, 0, 120)
+InfoLabel.Position = UDim2.new(0, 25, 0, 170)
+InfoLabel.BackgroundTransparency = 1
+InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+InfoLabel.TextSize = 13
+InfoLabel.Font = Enum.Font.GothamBold
+InfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+InfoLabel.LineHeight = 1.8
+InfoLabel.Text = "USER: " .. LP.Name:upper() .. "\nSTATUS: ONLINE\nVERSION: 4.0.0\nN.X.R HUB ACTIVE"
+
+-- [10] المربع المركزي الكبير (Center Display Box)
 local CenterBox = Instance.new("Frame")
-CenterBox.Parent = Main
-CenterBox.Size = UDim2.new(0, 360, 0, 220)
-CenterBox.Position = UDim2.new(0, 220, 0, 75)
+CenterBox.Name = "CenterBox"
+CenterBox.Parent = MainFrame
+CenterBox.Size = UDim2.new(0, 355, 0, 220)
+CenterBox.Position = UDim2.new(0, 225, 0, 75)
 CenterBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-Instance.new("UICorner", CenterBox).CornerRadius = UDim.new(0, 10)
+CenterBox.BorderSizePixel = 0
 
-local CenterStroke = Instance.new("UIStroke", CenterBox)
+local CenterCorner = Instance.new("UICorner")
+CenterCorner.CornerRadius = UDim.new(0, 10)
+CenterCorner.Parent = CenterBox
+
+local CenterStroke = Instance.new("UIStroke")
+CenterStroke.Parent = CenterBox
 CenterStroke.Color = Color3.fromRGB(255, 0, 50)
 CenterStroke.Thickness = 1.5
 
--- 🏷️ التبويبات العلوية (Home, Pages, Credits)
-local function MakeTab(name, x, active)
-    local t = Instance.new("TextButton", Main)
-    t.Text = name
-    t.Size = UDim2.new(0, 70, 0, 50)
-    t.Position = UDim2.new(1, x, 0, 10)
-    t.BackgroundTransparency = 1
-    t.TextColor3 = active and Color3.fromRGB(255, 0, 50) or Color3.fromRGB(150, 150, 150)
-    t.TextSize = 15
-    t.Font = Enum.Font.GothamBold
-end
-MakeTab("Home", -260, true)
-MakeTab("Pages", -180, false)
-MakeTab("Credits", -100, false)
+-- [11] الأزرار السفلية الثلاثة (CONFIG, SETTING, AD)
+-- زر CONFIG
+local ConfigBtn = Instance.new("TextButton")
+ConfigBtn.Name = "ConfigBtn"
+ConfigBtn.Parent = MainFrame
+ConfigBtn.Size = UDim2.new(0, 185, 0, 95)
+ConfigBtn.Position = UDim2.new(0, 10, 0, 315)
+ConfigBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+ConfigBtn.Text = "CONFIG"
+ConfigBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConfigBtn.TextSize = 16
+ConfigBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", ConfigBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", ConfigBtn).Color = Color3.fromRGB(40, 40, 40)
 
--- 🔘 الأزرار السفلية الثلاثة
-local function MakeBtn(name, x)
-    local b = Instance.new("TextButton", Main)
-    b.Name = name
-    b.Text = name
-    b.Size = UDim2.new(0, 185, 0, 90)
-    b.Position = UDim2.new(0, x, 0, 315)
-    b.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    b.TextColor3 = Color3.new(1, 1, 1)
-    b.TextSize = 16
-    b.Font = Enum.Font.GothamBold
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 10)
-    Instance.new("UIStroke", b).Color = Color3.fromRGB(35, 35, 35) -- إطار خفيف للأزرار
-end
-MakeBtn("CONFIG", 10)
-MakeBtn("SETTING", 205)
-MakeBtn("AD (إعلان)", 405)
+-- زر SETTING
+local SettingBtn = Instance.new("TextButton")
+SettingBtn.Name = "SettingBtn"
+SettingBtn.Parent = MainFrame
+SettingBtn.Size = UDim2.new(0, 185, 0, 95)
+SettingBtn.Position = UDim2.new(0, 205, 0, 315)
+SettingBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+SettingBtn.Text = "SETTING"
+SettingBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SettingBtn.TextSize = 16
+SettingBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", SettingBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", SettingBtn).Color = Color3.fromRGB(40, 40, 40)
 
--- 🔴 الزر العائم (فوق يمين الزاوية)
-local Toggle = Instance.new("TextButton", Screen)
-Toggle.Size = UDim2.new(0, 60, 0, 60)
-Toggle.Position = UDim2.new(1, -80, 0, 20)
-Toggle.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-Toggle.Text = "NXR"
-Toggle.TextColor3 = Color3.fromRGB(255, 0, 50)
-Toggle.TextSize = 16
-Toggle.Font = Enum.Font.GothamBold
-Toggle.ZIndex = 10000
-Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0)
-Instance.new("UIStroke", Toggle).Color = Color3.fromRGB(255, 0, 50)
+-- زر AD
+local AdBtn = Instance.new("TextButton")
+AdBtn.Name = "AdBtn"
+AdBtn.Parent = MainFrame
+AdBtn.Size = UDim2.new(0, 185, 0, 95)
+AdBtn.Position = UDim2.new(0, 400, 0, 315)
+AdBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+AdBtn.Text = "AD (إعلان)"
+AdBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+AdBtn.TextSize = 16
+AdBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", AdBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", AdBtn).Color = Color3.fromRGB(40, 40, 40)
 
-Toggle.MouseButton1Click:Connect(function()
-    Main.Visible = not Main.Visible
+-- [12] الزر العائم الصغير (Toggle Button) - فوق يمين الزاوية
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = ScreenGui
+ToggleButton.Size = UDim2.new(0, 60, 0, 60)
+ToggleButton.Position = UDim2.new(1, -75, 0, 20)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+ToggleButton.Text = "NXR"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 0, 50)
+ToggleButton.TextSize = 16
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.Active = true
+ToggleButton.Draggable = true
+ToggleButton.ZIndex = 100000
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(1, 0)
+ToggleCorner.Parent = ToggleButton
+
+local ToggleStroke = Instance.new("UIStroke")
+ToggleStroke.Parent = ToggleButton
+ToggleStroke.Color = Color3.fromRGB(255, 0, 50)
+ToggleStroke.Thickness = 3
+
+-- [13] وظيفة التبديل (فتح وإغلاق القائمة)
+ToggleButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
 end)
+
+print("Naxor V4: Full Replica Script Loaded Successfully.")
