@@ -1,57 +1,63 @@
--- [[ NAXOR V4 - THE CLEAN GOLDEN INTEGRATION ]] --
+-- [[ NAXOR V4 - THE FULL UNABRIDGED VERSION ]] --
 
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local PlayerGui = LP:WaitForChild("PlayerGui")
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
--- [1] تنظيف شامل
+-- [1] تنظيف أي نسخة قديمة لضمان عدم التداخل
 for _, v in pairs(PlayerGui:GetChildren()) do
     if v.Name == "Naxor_Official_V4" then v:Destroy() end
 end
 
--- متغيرات الثيم
+-- متغيرات الثيم الأساسية
 local R, G, B = 255, 0, 50
 
--- [2] إنشاء الواجهة
+-- [2] إنشاء الواجهة الرئيسية (ScreenGui)
 local Screen = Instance.new("ScreenGui", PlayerGui)
 Screen.Name = "Naxor_Official_V4"
 Screen.ResetOnSpawn = false
+Screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
+-- الإطار الرئيسي (Main Frame)
 local Main = Instance.new("Frame", Screen)
-Main.Size = UDim2.new(0, 480, 0, 340)
-Main.Position = UDim2.new(0.5, -240, 0.5, -170)
+Main.Name = "MainFrame"
+Main.Size = UDim2.new(0, 520, 0, 360) -- كبرت الحجم شوي عشان الستات
+Main.Position = UDim2.new(0.5, -260, 0.5, -180)
 Main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-Main.Active = true 
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 15)
+Main.BorderSizePixel = 0
+Main.Active = true
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 18)
 
+-- حدود الواجهة المتغيرة (RGB Stroke)
 local Stroke = Instance.new("UIStroke", Main)
 Stroke.Thickness = 2.5
 Stroke.Color = Color3.fromRGB(R, G, B)
 
--- [3] شريط سحب الآيفون (iPhone Bar)
+-- [3] شريط سحب الآيفون (iPhone Home Bar)
 local DragBar = Instance.new("Frame", Main)
-DragBar.Size = UDim2.new(0, 140, 0, 5)
-DragBar.Position = UDim2.new(0.5, -70, 1, -12)
+DragBar.Name = "iPhoneBar"
+DragBar.Size = UDim2.new(0, 150, 0, 4)
+DragBar.Position = UDim2.new(0.5, -75, 1, -12)
 DragBar.BackgroundColor3 = Color3.new(1, 1, 1)
 DragBar.BackgroundTransparency = 0.4
+DragBar.ZIndex = 20
 Instance.new("UICorner", DragBar).CornerRadius = UDim.new(1, 0)
 
--- برمجة السحب (حصري للشريط)
-local Dragging = false
-local DragStart, StartPos
-
+-- برمجة السحب الحصري من الخط السفلي فقط
+local MainDragging, DragStart, StartPos
 DragBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        Dragging = true
+        MainDragging = true
         DragStart = input.Position
         StartPos = Main.Position
     end
 end)
 
 UIS.InputChanged:Connect(function(input)
-    if Dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+    if MainDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
         local Delta = input.Position - DragStart
         Main.Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
     end
@@ -59,66 +65,118 @@ end)
 
 UIS.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        Dragging = false
+        MainDragging = false
     end
 end)
 
--- [4] الشعار والصفحات
+-- [4] الشعار العلوي (N.X.R >>>)
 local Logo = Instance.new("TextLabel", Main)
+Logo.Name = "Logo"
 Logo.RichText = true
 Logo.Text = "N.X.R <font color='#FF0032'>>>> </font>"
-Logo.Size = UDim2.new(0, 150, 0, 50); Logo.Position = UDim2.new(0, 20, 0, 5)
-Logo.BackgroundTransparency = 1; Logo.TextColor3 = Color3.new(1, 1, 1); Logo.TextSize = 24; Logo.Font = "GothamBold"; Logo.TextXAlignment = "Left"
+Logo.Size = UDim2.new(0, 200, 0, 60)
+Logo.Position = UDim2.new(0, 25, 0, 10)
+Logo.BackgroundTransparency = 1
+Logo.TextColor3 = Color3.new(1, 1, 1)
+Logo.TextSize = 28
+Logo.Font = "GothamBold"
+Logo.TextXAlignment = "Left"
 
+-- [5] الحاويات (الصفحات)
 local HomeP = Instance.new("Frame", Main); HomeP.Size = UDim2.new(1, 0, 1, 0); HomeP.BackgroundTransparency = 1; HomeP.Visible = true
-local ScriptP = Instance.new("Frame", Main); ScriptP.Size = UDim2.new(1, 0, 1, 0); ScriptP.BackgroundTransparency = 1; ScriptP.Visible = false
 local SettingsP = Instance.new("Frame", Main); SettingsP.Size = UDim2.new(1, 0, 1, 0); SettingsP.BackgroundTransparency = 1; SettingsP.Visible = false
+local ScriptP = Instance.new("Frame", Main); ScriptP.Size = UDim2.new(1, 0, 1, 0); ScriptP.BackgroundTransparency = 1; ScriptP.Visible = false
 
--- [5] تحديث الألوان الحية
-local function UpdateColors()
+-- [6] لوحة معلومات اللاعب (PLAYER STATS) - في صفحة الهوم
+local StatsFrame = Instance.new("Frame", HomeP)
+StatsFrame.Size = UDim2.new(0, 470, 0, 100)
+StatsFrame.Position = UDim2.new(0.5, -235, 0, 80)
+StatsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Instance.new("UICorner", StatsFrame).CornerRadius = UDim.new(0, 12)
+
+-- صورة اللاعب
+local pImage = Instance.new("ImageLabel", StatsFrame)
+pImage.Size = UDim2.new(0, 70, 0, 70)
+pImage.Position = UDim2.new(0, 15, 0.5, -35)
+pImage.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+pImage.Image = "rbxthumb://type=AvatarHeadShot&id="..LP.UserId.."&w=150&h=150"
+Instance.new("UICorner", pImage).CornerRadius = UDim.new(1, 0)
+
+-- اسم اللاعب
+local pName = Instance.new("TextLabel", StatsFrame)
+pName.Text = "Username: " .. LP.Name
+pName.Size = UDim2.new(0, 300, 0, 30); pName.Position = UDim2.new(0, 100, 0, 20)
+pName.BackgroundTransparency = 1; pName.TextColor3 = Color3.new(1, 1, 1); pName.TextSize = 18; pName.Font = "GothamBold"; pName.TextXAlignment = "Left"
+
+-- عمر الحساب
+local pAge = Instance.new("TextLabel", StatsFrame)
+pAge.Text = "Account Age: " .. LP.AccountAge .. " Days"
+pAge.Size = UDim2.new(0, 300, 0, 30); pAge.Position = UDim2.new(0, 100, 0, 45)
+pAge.BackgroundTransparency = 1; pAge.TextColor3 = Color3.fromRGB(180, 180, 180); pAge.TextSize = 14; pAge.Font = "GothamMedium"; pAge.TextXAlignment = "Left"
+
+-- [7] أزرار التنقل العلوية (🏠 و 📄)
+local function CreateNav(txt, xPos, callback)
+    local b = Instance.new("TextButton", Main)
+    b.Size = UDim2.new(0, 42, 0, 42)
+    b.Position = UDim2.new(1, xPos, 0, 15)
+    b.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+    b.Text = txt; b.TextColor3 = Color3.new(1, 1, 1); b.TextSize = 18
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 10)
+    b.MouseButton1Click:Connect(callback)
+    return b
+end
+
+CreateNav("🏠", -105, function() HomeP.Visible = true; SettingsP.Visible = false; ScriptP.Visible = false end)
+CreateNav("📄", -55, function() HomeP.Visible = false; SettingsP.Visible = false; ScriptP.Visible = true end)
+
+-- [8] نظام تحديث الألوان الحي
+local function UpdateUI()
     local C = Color3.fromRGB(R, G, B)
     Stroke.Color = C
     Logo.Text = "N.X.R <font color='#" .. C:ToHex() .. "'> >>> </font>"
 end
 
--- [6] نظام المنزلقات RGB
-local function MakeSlider(name, color, pos)
-    local SFrame = Instance.new("Frame", SettingsP)
-    SFrame.Size = UDim2.new(0, 240, 0, 35); SFrame.Position = UDim2.new(0, 20, 0, 100 + (pos * 40)); SFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 22); Instance.new("UICorner", SFrame).CornerRadius = UDim.new(0, 6)
-    local Bar = Instance.new("Frame", SFrame); Bar.Size = UDim2.new(0, 180, 0, 4); Bar.Position = UDim2.new(0, 45, 0.5, -2); Bar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    local Dot = Instance.new("TextButton", Bar); Dot.Size = UDim2.new(0, 14, 0, 14); Dot.Position = UDim2.new(0, 0, 0.5, -7); Dot.BackgroundColor3 = color; Dot.Text = ""; Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
+-- [9] منزلقات الـ RGB المصلحة (Smooth Sliding)
+local function CreateSlider(name, col, order)
+    local f = Instance.new("Frame", SettingsP)
+    f.Size = UDim2.new(0, 270, 0, 45); f.Position = UDim2.new(0, 25, 0, 100 + (order * 55)); f.BackgroundColor3 = Color3.fromRGB(22, 22, 22); Instance.new("UICorner", f).CornerRadius = UDim.new(0, 10)
+    local bar = Instance.new("Frame", f); bar.Size = UDim2.new(0, 180, 0, 5); bar.Position = UDim2.new(0, 70, 0.5, -2); bar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    local dot = Instance.new("TextButton", bar); dot.Size = UDim2.new(0, 18, 0, 18); dot.Position = UDim2.new(0, 0, 0.5, -9); dot.BackgroundColor3 = col; dot.Text = ""; Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
     
     local Sliding = false
-    Dot.MouseButton1Down:Connect(function() Sliding = true end)
+    dot.MouseButton1Down:Connect(function() Sliding = true end)
+    
     UIS.InputChanged:Connect(function(input)
         if Sliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local Move = math.clamp((input.Position.X - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
-            Dot.Position = UDim2.new(Move, -7, 0.5, -7)
-            local Val = math.floor(Move * 255)
+            local Percent = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+            dot.Position = UDim2.new(Percent, -9, 0.5, -9)
+            local Val = math.floor(Percent * 255)
             if name == "R" then R = Val elseif name == "G" then G = Val elseif name == "B" then B = Val end
-            UpdateColors()
+            UpdateUI()
         end
     end)
-    UIS.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then Sliding = false end end)
+    UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then Sliding = false end end)
 end
-MakeSlider("R", Color3.new(1,0,0), 0); MakeSlider("G", Color3.new(0,1,0), 1); MakeSlider("B", Color3.new(0,0.5,1), 2)
 
--- [7] التنقل والأزرار
-local HomeBtn = Instance.new("TextButton", Main); HomeBtn.Size = UDim2.new(0, 35, 0, 35); HomeBtn.Position = UDim2.new(1, -90, 0, 12); HomeBtn.Text = "🏠"; HomeBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25); HomeBtn.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", HomeBtn).CornerRadius = UDim.new(0, 8)
-local ScriptBtn = Instance.new("TextButton", Main); ScriptBtn.Size = UDim2.new(0, 35, 0, 35); ScriptBtn.Position = UDim2.new(1, -45, 0, 12); ScriptBtn.Text = "📄"; ScriptBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25); ScriptBtn.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", ScriptBtn).CornerRadius = UDim.new(0, 8)
+CreateSlider("R", Color3.new(1,0,0), 0)
+CreateSlider("G", Color3.new(0,1,0), 1)
+CreateSlider("B", Color3.new(0,0.6,1), 2)
 
-HomeBtn.MouseButton1Click:Connect(function() HomeP.Visible = true; ScriptP.Visible = false; SettingsP.Visible = false end)
-ScriptBtn.MouseButton1Click:Connect(function() HomeP.Visible = false; ScriptP.Visible = true; SettingsP.Visible = false end)
-
--- أزرار الهوم السفلية
-local function AddBBtn(txt, pos, cb)
-    local b = Instance.new("TextButton", HomeP); b.Size = UDim2.new(0, 140, 0, 60); b.Position = pos; b.BackgroundColor3 = Color3.fromRGB(22, 22, 22); b.Text = txt; b.TextColor3 = Color3.new(1,1,1); b.Font = "GothamBold"; Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
-    b.MouseButton1Click:Connect(cb)
+-- [10] الأزرار السفلية (CONFIG, SETTING, AD)
+local function AddBottom(name, xPos, callback)
+    local b = Instance.new("TextButton", HomeP)
+    b.Size = UDim2.new(0, 150, 0, 75)
+    b.Position = UDim2.new(0, xPos, 1, -105)
+    b.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    b.Text = name; b.TextColor3 = Color3.new(1, 1, 1); b.Font = "GothamBold"; b.TextSize = 11
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 12)
+    b.MouseButton1Click:Connect(callback)
 end
-AddBBtn("CONFIG", UDim2.new(0, 15, 0, 250), function() end)
-AddBBtn("SETTING", UDim2.new(0, 170, 0, 250), function() HomeP.Visible = false; SettingsP.Visible = true end)
-AddBBtn("AD", UDim2.new(0, 325, 0, 250), function() end)
 
--- الزر العائم
-local Toggle = Instance.new("TextButton", Screen); Toggle.Size = UDim2.new(0, 50, 0, 50); Toggle.Position = UDim2.new(1, -60, 0, 20); Toggle.Text = "NXR"; Toggle.BackgroundColor3 = Color3.fromRGB(15, 15, 15); Toggle.TextColor3 = Color3.fromRGB(255, 0, 50); Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0); Toggle.Draggable = true
+AddBottom("CONFIG", 15, function() print("Config clicked") end)
+AddBottom("SETTING", 185, function() HomeP.Visible = false; SettingsP.Visible = true end)
+AddBottom("AD", 355, function() print("Ad clicked") end)
+
+-- [11] الزر العائم NXR
+local Toggle = Instance.new("TextButton", Screen); Toggle.Size = UDim2.new(0, 55, 0, 55); Toggle.Position = UDim2.new(1, -70, 0, 20); Toggle.Text = "NXR"; Toggle.BackgroundColor3 = Color3.fromRGB(15, 15, 15); Toggle.TextColor3 = Color3.fromRGB(255, 0, 50); Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0); Toggle.Draggable = true
 Toggle.MouseButton1Click:Connect(function() Main.Visible = not Main.Visible end)
