@@ -1,4 +1,4 @@
--- [[ NAXOR V7.5 - THE COMPLETE INTEGRATED SCRIPT ]] --
+-- [[ NAXOR V7.6 - FULL INTEGRATED & SPACING FIXED ]] --
 
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
@@ -15,7 +15,7 @@ local MainColor = Color3.fromRGB(220, 220, 220)
 local Screen = Instance.new("ScreenGui", PlayerGui)
 Screen.Name = "Naxor_Official_V5"; Screen.ResetOnSpawn = false
 
--- [ وظيفة السحب ] --
+-- [ وظيفة السحب السلس ] --
 local function MakeDraggable(Frame, Handle)
     local Dragging, DragInput, DragStart, StartPos
     Handle.InputBegan:Connect(function(input)
@@ -36,7 +36,7 @@ end
 
 -- [ الزر العائم ] --
 local ToggleBtn = Instance.new("ImageButton", Screen)
-ToggleBtn.Size = UDim2.new(0, 45, 0, 45); ToggleBtn.Position = UDim2.new(0.5, -22, 0, 15)
+ToggleBtn.Size = UDim2.new(0, 45, 0, 45); ToggleBtn.Position = UDim2.new(0, 20, 0.5, -22) -- موقع جانبي أفضل
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10); ToggleBtn.Image = "rbxassetid://6031094067"
 ToggleBtn.Visible = false; Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
 local ToggleStroke = Instance.new("UIStroke", ToggleBtn); ToggleStroke.Thickness = 1.5; ToggleStroke.Color = MainColor
@@ -74,9 +74,7 @@ local P = {
     Credits = Instance.new("Frame", PagesCont)
 }
 for name, frame in pairs(P) do 
-    frame.Size = UDim2.new(1, 0, 1, 0)
-    frame.BackgroundTransparency = 1
-    frame.Visible = (name == "Home") 
+    frame.Size = UDim2.new(1, 0, 1, 0); frame.BackgroundTransparency = 1; frame.Visible = (name == "Home") 
 end
 
 local function CreateNavBtn(name, x, target)
@@ -99,14 +97,13 @@ local DName = Instance.new("TextLabel", IDCard); DName.Text = LP.DisplayName; DN
 local UName = Instance.new("TextLabel", IDCard); UName.Text = "@"..LP.Name; UName.Size = UDim2.new(0, 110, 0, 20); UName.Position = UDim2.new(0, 85, 0, 38); UName.BackgroundTransparency = 1; UName.TextColor3 = Color3.fromRGB(150, 150, 150); UName.TextSize = 10; UName.Font = "GothamMedium"; UName.TextXAlignment = "Left"
 local RankTag = Instance.new("Frame", IDCard); RankTag.Size = UDim2.new(0, 55, 0, 18); RankTag.Position = UDim2.new(0, 85, 0, 58); RankTag.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", RankTag).CornerRadius = UDim.new(0, 4); local RS = Instance.new("UIStroke", RankTag); RS.Color = MainColor; RS.Thickness = 1
 local RT = Instance.new("TextLabel", RankTag); RT.Size = UDim2.new(1, 0, 1, 0); RT.Text = "OWNER"; RT.TextColor3 = MainColor; RT.TextSize = 8; RT.Font = "GothamBold"; RT.BackgroundTransparency = 1
-
 local PlayTimeLabel = Instance.new("TextLabel", IDCard); PlayTimeLabel.Text = "PlayTime: 00:00:00"; PlayTimeLabel.Position = UDim2.new(0, 15, 0, 150); PlayTimeLabel.Size = UDim2.new(1, -30, 0, 20); PlayTimeLabel.BackgroundTransparency = 1; PlayTimeLabel.TextColor3 = MainColor; PlayTimeLabel.TextSize = 10; PlayTimeLabel.Font = "GothamBold"; PlayTimeLabel.TextXAlignment = "Left"
 
 local UserStatus = Instance.new("Frame", IDCard); UserStatus.Size = UDim2.new(0, 120, 0, 20); UserStatus.Position = UDim2.new(0, 15, 1, -25); UserStatus.BackgroundTransparency = 1
 local Dot = Instance.new("Frame", UserStatus); Dot.Size = UDim2.new(0, 6, 0, 6); Dot.Position = UDim2.new(0, 0, 0.5, -3); Dot.BackgroundColor3 = Color3.fromRGB(0, 255, 100); Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
 local UserText = Instance.new("TextLabel", UserStatus); UserText.Size = UDim2.new(1, -12, 1, 0); UserText.Position = UDim2.new(0, 12, 0, 0); UserText.BackgroundTransparency = 1; UserText.TextColor3 = Color3.fromRGB(180, 180, 180); UserText.TextSize = 9; UserText.Font = "GothamMedium"; UserText.TextXAlignment = "Left"; UserText.Text = "0 ONLINE"
 
--- [[ الأزرار السفلية المصلحة (عالية الوضوح) ]] --
+-- [[ الأزرار السفلية مع المسافة الجديدة (Y = 255) ]] --
 local function CreateStyledBtn(name, pos, size, parent)
     local btn = Instance.new("TextButton", parent)
     btn.Size = size; btn.Position = pos; btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
@@ -116,14 +113,13 @@ local function CreateStyledBtn(name, pos, size, parent)
     return btn
 end
 
-CreateStyledBtn("CONFIG", UDim2.new(0, 25, 0, 245), UDim2.new(0, 100, 0, 45), P.Home)
-CreateStyledBtn("SETTING", UDim2.new(0, 135, 0, 245), UDim2.new(0, 100, 0, 45), P.Home)
+CreateStyledBtn("CONFIG", UDim2.new(0, 25, 0, 255), UDim2.new(0, 100, 0, 45), P.Home)
+CreateStyledBtn("SETTING", UDim2.new(0, 135, 0, 255), UDim2.new(0, 100, 0, 45), P.Home)
 
--- المربع الإعلاني
 local PicBox = Instance.new("Frame", P.Home); PicBox.Size = UDim2.new(1, -275, 0, 210); PicBox.Position = UDim2.new(0, 250, 0, 25); PicBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Instance.new("UICorner", PicBox).CornerRadius = UDim.new(0, 10); local PIS = Instance.new("UIStroke", PicBox); PIS.Color = MainColor; PIS.Thickness = 1.8
-CreateStyledBtn("ADVERTISEMENT (إعلان)", UDim2.new(0, 250, 0, 245), UDim2.new(1, -275, 0, 45), P.Home)
+CreateStyledBtn("ADVERTISEMENT (إعلان)", UDim2.new(0, 250, 0, 255), UDim2.new(1, -275, 0, 45), P.Home)
 
--- [ تشغيل الأنظمة المستمرة ] --
+-- [ الأنظمة المستمرة ] --
 task.spawn(function()
     while true do
         local H = os.date("*t").hour; local B = (H>=1 and H<=5 and math.random(200,450)) or (H>=6 and H<=11 and math.random(600,950)) or (H>=12 and H<=17 and math.random(1300,1800)) or math.random(2400,3500)
