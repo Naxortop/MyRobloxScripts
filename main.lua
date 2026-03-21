@@ -1,473 +1,188 @@
--- [[ NAXOR OFFICIAL V74.0 - MODERN SCROLLING SYSTEM ]] --
+‏-- [[ NAXOR OFFICIAL V75.5 - UPDATED WITH CREDITS ]] --
+‏local Players = game:GetService("Players")
+‏local LP = Players.LocalPlayer
+‏local PlayerGui = LP:WaitForChild("PlayerGui")
+‏local UIS = game:GetService("UserInputService")
+‏local TS = game:GetService("TweenService")
+‏local SoundService = game:GetService("SoundService")
+‏local CAS = game:GetService("ContextActionService")
 
-local Players = game:GetService("Players")
-local LP = Players.LocalPlayer
-local PlayerGui = LP:WaitForChild("PlayerGui")
-local UIS = game:GetService("UserInputService")
-local TS = game:GetService("TweenService")
-local SoundService = game:GetService("SoundService")
-local CAS = game:GetService("ContextActionService")
+‏-- [[ SETTINGS ]] --
+‏local CustomImageID = "rbxassetid://111311482551281" 
+‏local IsNotifyActive = false
 
--- [[ SETTINGS ]] --
-local CustomImageID = "rbxassetid://111311482551281" 
-local IsNotifyActive = false
+‏if PlayerGui:FindFirstChild("Naxor_Official_V5") then PlayerGui.Naxor_Official_V5:Destroy() end
 
-if PlayerGui:FindFirstChild("Naxor_Official_V5") then PlayerGui.Naxor_Official_V5:Destroy() end
+‏local Screen = Instance.new("ScreenGui", PlayerGui)
+‏Screen.Name = "Naxor_Official_V5"
+‏Screen.ResetOnSpawn = false
 
-local Screen = Instance.new("ScreenGui", PlayerGui)
-Screen.Name = "Naxor_Official_V5"
-Screen.ResetOnSpawn = false
-
-local Theme = {
-    Main = Color3.fromRGB(8, 8, 8),
-    Card = Color3.fromRGB(12, 12, 12),
-    SubBox = Color3.fromRGB(18, 18, 18),
-    Accent = Color3.fromRGB(220, 220, 220),
-    White = Color3.fromRGB(255, 255, 255),
-    Gray = Color3.fromRGB(130, 130, 130),
-    Green = Color3.fromRGB(0, 255, 100)
+‏local Theme = {
+‏    Main = Color3.fromRGB(8, 8, 8),
+‏    Card = Color3.fromRGB(12, 12, 12),
+‏    SubBox = Color3.fromRGB(18, 18, 18),
+‏    Accent = Color3.fromRGB(220, 220, 220),
+‏    White = Color3.fromRGB(255, 255, 255),
+‏    Gray = Color3.fromRGB(130, 130, 130),
+‏    Green = Color3.fromRGB(0, 255, 100)
 }
 
--- نظام الصوت
-local function PlayClickSound()
-    local s = Instance.new("Sound", SoundService)
-    s.SoundId = "rbxassetid://6518811702"
-    s.Volume = 0.8
-    s:Play()
-    game:GetService("Debris"):AddItem(s, 2)
-end
+‏-- [[ Helper Functions ]] --
+‏local function PlayClickSound()
+‏    local s = Instance.new("Sound", SoundService)
+‏    s.SoundId = "rbxassetid://6518811702"
+‏    s.Volume = 0.8; s:Play()
+‏    game:GetService("Debris"):AddItem(s, 2)
+‏end
 
--- نظام الإشعارات
-local function ShowCenterNotify(msg)
-    if IsNotifyActive then return end
-    IsNotifyActive = true
-    PlayClickSound()
-    local MainFrame = Screen:FindFirstChild("MainFrame")
-    if not MainFrame then IsNotifyActive = false; return end
+‏local function ApplyBoxStyle(obj, strokeColor)
+‏    Instance.new("UICorner", obj).CornerRadius = UDim.new(0, 12)
+‏    local s = Instance.new("UIStroke", obj)
+‏    s.Color = strokeColor or Color3.fromRGB(45, 45, 45)
+‏    s.Thickness = 1.2; s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+‏    return s
+‏end
 
-    local nFrame = Instance.new("Frame", MainFrame)
-    nFrame.Size = UDim2.new(0, 280, 0, 42)
-    nFrame.Position = UDim2.new(0.5, -140, 0.35, 0)
-    nFrame.BackgroundColor3 = Theme.Card
-    nFrame.ZIndex = 2000
-    nFrame.BackgroundTransparency = 1
-    Instance.new("UICorner", nFrame).CornerRadius = UDim.new(0, 8)
-    local st = Instance.new("UIStroke", nFrame)
-    st.Color = Theme.Accent
-    st.Thickness = 1.5
-    st.Transparency = 1
+‏local function ShowCenterNotify(msg)
+‏    if IsNotifyActive then return end
+‏    IsNotifyActive = true
+‏    PlayClickSound()
+‏    local MainFrame = Screen:FindFirstChild("MainFrame")
+‏    if not MainFrame then IsNotifyActive = false; return end
+    
+‏    local nFrame = Instance.new("Frame", MainFrame)
+‏    nFrame.Size = UDim2.new(0, 280, 0, 42)
+‏    nFrame.Position = UDim2.new(0.5, -140, 0.35, 0)
+‏    nFrame.BackgroundColor3 = Theme.Card
+‏    nFrame.ZIndex = 2000
+‏    nFrame.BackgroundTransparency = 1
+‏    Instance.new("UICorner", nFrame).CornerRadius = UDim.new(0, 8)
+‏    local st = Instance.new("UIStroke", nFrame)
+‏    st.Color = Theme.Accent; st.Thickness = 1.5; st.Transparency = 1
+    
+‏    local txt = Instance.new("TextLabel", nFrame)
+‏    txt.Size = UDim2.new(1, 0, 1, 0); txt.BackgroundTransparency = 1; txt.ZIndex = 2001; txt.Text = msg
+‏    txt.TextColor3 = Theme.White; txt.Font = "GothamBold"; txt.TextSize = 11; txt.TextTransparency = 1
 
-    local txt = Instance.new("TextLabel", nFrame)
-    txt.Size = UDim2.new(1, 0, 1, 0)
-    txt.BackgroundTransparency = 1
-    txt.ZIndex = 2001
-    txt.Text = msg
-    txt.TextColor3 = Theme.White
-    txt.Font = "GothamBold"
-    txt.TextSize = 11
-    txt.TextTransparency = 1
+‏    TS:Create(nFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -140, 0.45, 0), BackgroundTransparency = 0}):Play()
+‏    TS:Create(st, TweenInfo.new(0.4), {Transparency = 0}):Play()
+‏    TS:Create(txt, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+    
+‏    task.wait(2.2)
+‏    local fade = TS:Create(nFrame, TweenInfo.new(0.4), {BackgroundTransparency = 1, Position = UDim2.new(0.5, -140, 0.4, 0)})
+‏    TS:Create(st, TweenInfo.new(0.4), {Transparency = 1}):Play()
+‏    TS:Create(txt, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+‏    fade:Play()
+‏    fade.Completed:Wait()
+‏    nFrame:Destroy()
+‏    IsNotifyActive = false
+‏end
 
-    TS:Create(nFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -140, 0.45, 0), BackgroundTransparency = 0}):Play()
-    TS:Create(st, TweenInfo.new(0.4), {Transparency = 0}):Play()
-    TS:Create(txt, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+‏local function MakeDrag(Frame, Handle)
+‏    local d, ds, sp
+‏    Handle.InputBegan:Connect(function(i)
+‏        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+‏            d = true ds = i.Position sp = Frame.Position
+‏            CAS:BindAction("DragLock", function() return Enum.ContextActionResult.Sink end, false, Enum.UserInputType.MouseMovement, Enum.UserInputType.Touch)
+‏        end
+‏    end)
+‏    Handle.InputEnded:Connect(function(i)
+‏        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+‏            d = false CAS:UnbindAction("DragLock")
+‏        end
+‏    end)
+‏    UIS.InputChanged:Connect(function(i)
+‏        if d and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+‏            local delta = i.Position - ds
+‏            Frame.Position = UDim2.new(sp.X.Scale, sp.X.Offset + delta.X, sp.Y.Scale, sp.Y.Offset + delta.Y)
+‏        end
+‏    end)
+‏end
 
-    task.wait(2.2)
-    local fade = TS:Create(nFrame, TweenInfo.new(0.4), {BackgroundTransparency = 1, Position = UDim2.new(0.5, -140, 0.4, 0)})
-    TS:Create(st, TweenInfo.new(0.4), {Transparency = 1}):Play()
-    TS:Create(txt, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
-    fade:Play()
-    fade.Completed:Wait()
-    nFrame:Destroy()
-    IsNotifyActive = false
-end
+‏-- [[ UI Main Framework ]] --
+‏local Main = Instance.new("Frame", Screen)
+‏Main.Name = "MainFrame"; Main.Size = UDim2.new(0, 560, 0, 390); Main.Position = UDim2.new(0.5, -280, 0.5, -195); Main.BackgroundColor3 = Theme.Main
+‏ApplyBoxStyle(Main, Theme.Accent).Thickness = 1.8
 
--- دوال التصميم
-local function ApplyBoxStyle(obj, strokeColor)
-    Instance.new("UICorner", obj).CornerRadius = UDim.new(0, 12)
-    local s = Instance.new("UIStroke", obj)
-    s.Color = strokeColor or Color3.fromRGB(45, 45, 45)
-    s.Thickness = 1.2
-    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    return s
-end
+‏local Header = Instance.new("Frame", Main); Header.Size = UDim2.new(1, 0, 0, 65); Header.BackgroundTransparency = 1; MakeDrag(Main, Header)
 
-local function MakeDrag(Frame, Handle)
-    local d, ds, sp
-    Handle.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            d = true
-            ds = i.Position
-            sp = Frame.Position
-            CAS:BindAction("DragLock", function() return Enum.ContextActionResult.Sink end, false, Enum.UserInputType.MouseMovement, Enum.UserInputType.Touch)
-        end
-    end)
-    Handle.InputEnded:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            d = false
-            CAS:UnbindAction("DragLock")
-        end
-    end)
-    UIS.InputChanged:Connect(function(i)
-        if d and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
-            local delta = i.Position - ds
-            Frame.Position = UDim2.new(sp.X.Scale, sp.X.Offset + delta.X, sp.Y.Scale, sp.Y.Offset + delta.Y)
-        end
-    end)
-end
+‏local Logo = Instance.new("TextLabel", Header)
+‏Logo.Text = "-FUCK HOHOHUB-"; Logo.Size = UDim2.new(0, 300, 1, 0); Logo.Position = UDim2.new(0, 35, 0, 0); Logo.BackgroundTransparency = 1; Logo.TextColor3 = Theme.Accent; Logo.TextSize = 24; Logo.Font = "GothamBold"; Logo.TextXAlignment = "Left"
 
--- الواجهة الرئيسية
-local Main = Instance.new("Frame", Screen)
-Main.Name = "MainFrame"
-Main.Size = UDim2.new(0, 560, 0, 390)
-Main.Position = UDim2.new(0.5, -280, 0.5, -195)
-Main.BackgroundColor3 = Theme.Main
-ApplyBoxStyle(Main, Theme.Accent)
-Main.UIStroke.Thickness = 1.8
+‏local Close = Instance.new("TextButton", Header)
+‏Close.Text = "×"; Close.Size = UDim2.new(0, 30, 0, 30); Close.Position = UDim2.new(1, -45, 0, 17); Close.BackgroundTransparency = 1; Close.TextColor3 = Theme.Accent; Close.TextSize = 30; Close.Font = "GothamBold"; Close.ZIndex = 10
 
-local Header = Instance.new("Frame", Main)
-Header.Size = UDim2.new(1, 0, 0, 65)
-Header.BackgroundTransparency = 1
-MakeDrag(Main, Header)
+‏local Nav = Instance.new("Frame", Header); Nav.Size = UDim2.new(0, 260, 1, 0); Nav.Position = UDim2.new(1, -300, 0, 0); Nav.BackgroundTransparency = 1
+‏local Line = Instance.new("Frame", Nav); Line.Size = UDim2.new(0, 35, 0, 2); Line.Position = UDim2.new(0, 22, 0, 48); Line.BackgroundColor3 = Theme.Accent; Line.BorderSizePixel = 0
 
--- اللوجو
-local Logo = Instance.new("TextLabel", Header)
-Logo.Text = "-FUCK HOHOHUB-"
-Logo.Size = UDim2.new(0, 300, 1, 0)
-Logo.Position = UDim2.new(0, 35, 0, 0)
-Logo.BackgroundTransparency = 1
-Logo.TextColor3 = Theme.Accent
-Logo.TextSize = 24
-Logo.Font = "GothamBold"
-Logo.TextXAlignment = "Left"
+‏local PagesCont = Instance.new("Frame", Main); PagesCont.Size = UDim2.new(1, 0, 1, -65); PagesCont.Position = UDim2.new(0, 0, 0, 65); PagesCont.BackgroundTransparency = 1
+‏local P = { Home = Instance.new("Frame", PagesCont), Scripts = Instance.new("Frame", PagesCont), Credits = Instance.new("Frame", PagesCont), TestPage = Instance.new("Frame", PagesCont) }
+‏for n, f in pairs(P) do f.Size = UDim2.new(1, 0, 1, 0); f.BackgroundTransparency = 1; f.Visible = (n == "Home") end
 
--- زر إغلاق
-local Close = Instance.new("TextButton", Header)
-Close.Text = "×"
-Close.Size = UDim2.new(0, 30, 0, 30)
-Close.Position = UDim2.new(1, -45, 0, 17)
-Close.BackgroundTransparency = 1
-Close.TextColor3 = Theme.Accent
-Close.TextSize = 30
-Close.Font = "GothamBold"
-Close.MouseButton1Click:Connect(function()
-    PlayClickSound()
-    Main.Visible = false
-    Screen:FindFirstChild("Tog").Visible = true
-end)
+‏local backBtn = Instance.new("TextButton", Header)
+‏backBtn.Size = UDim2.new(0, 80, 0, 30); backBtn.Position = UDim2.new(0, 15, 0, 17); backBtn.BackgroundColor3 = Theme.Card; backBtn.Text = "← BACK"; backBtn.TextColor3 = Theme.White; backBtn.Font = "GothamBold"; backBtn.TextSize = 11; backBtn.Visible = false; ApplyBoxStyle(backBtn, Theme.Accent)
+‏backBtn.MouseButton1Click:Connect(function() PlayClickSound(); ShowPage(P.Scripts) end)
 
--- محتوى الصفحات
-local PagesCont = Instance.new("Frame", Main)
-PagesCont.Size = UDim2.new(1, 0, 1, -65)
-PagesCont.Position = UDim2.new(0, 0, 0, 65)
-PagesCont.BackgroundTransparency = 1
+‏function ShowPage(page)
+‏    for _, f in pairs(P) do f.Visible = false end; page.Visible = true
+‏    if page == P.TestPage then Logo.Visible = false; Nav.Visible = false; backBtn.Visible = true else Logo.Visible = true; Nav.Visible = true; backBtn.Visible = false end
+‏end
 
-local P = {
-    Home = Instance.new("Frame", PagesCont),
-    Scripts = Instance.new("Frame", PagesCont),
-    Credits = Instance.new("Frame", PagesCont)
-}
-for n, f in pairs(P) do
-    f.Size = UDim2.new(1, 0, 1, 0)
-    f.BackgroundTransparency = 1
-    f.Visible = (n == "Home")
-end
+‏local function CreateTab(name, x, target)
+‏    local btn = Instance.new("TextButton", Nav)
+‏    btn.Size = UDim2.new(0, 80, 1, 0); btn.Position = UDim2.new(0, x, 0, 0); btn.BackgroundTransparency = 1; btn.Text = name; btn.TextColor3 = (target == "Home" and Theme.White or Theme.Gray); btn.Font = "GothamBold"; btn.TextSize = 12
+‏    btn.MouseButton1Click:Connect(function() PlayClickSound(); TS:Create(Line, TweenInfo.new(0.3), {Position = UDim2.new(0, x + 22, 0, 48)}):Play(); ShowPage(P[target]); for _, obj in pairs(Nav:GetChildren()) do if obj:IsA("TextButton") then obj.TextColor3 = Theme.Gray end end; btn.TextColor3 = Theme.White end)
+‏end
+‏CreateTab("HOME", 0, "Home"); CreateTab("PAGES", 85, "Scripts"); CreateTab("CREDITS", 170, "Credits")
 
--- الشريط العلوي للتنقل
-local Nav = Instance.new("Frame", Header)
-Nav.Size = UDim2.new(0, 260, 1, 0)
-Nav.Position = UDim2.new(1, -300, 0, 0)
-Nav.BackgroundTransparency = 1
+‏-- [[ HOME PAGE CONTENT ]] --
+‏local IDCard = Instance.new("Frame", P.Home); IDCard.Size = UDim2.new(0, 220, 0, 220); IDCard.Position = UDim2.new(0, 25, 0, 20); IDCard.BackgroundColor3 = Theme.Card; ApplyBoxStyle(IDCard)
+‏local pImg = Instance.new("ImageLabel", IDCard); pImg.Size = UDim2.new(0, 75, 0, 75); pImg.Position = UDim2.new(0, 15, 0, 15); pImg.Image = "rbxthumb://type=AvatarHeadShot&id=" .. LP.UserId .. "&w=150&h=150"; pImg.BackgroundTransparency = 1; Instance.new("UICorner", pImg).CornerRadius = UDim.new(0, 10); ApplyBoxStyle(pImg, Theme.Accent).Thickness = 0.5
+‏local pNameLabel = Instance.new("TextLabel", IDCard); pNameLabel.Text = LP.DisplayName; pNameLabel.Size = UDim2.new(0, 115, 0, 15); pNameLabel.Position = UDim2.new(0, 100, 0, 15); pNameLabel.TextColor3 = Theme.White; pNameLabel.Font = "GothamBold"; pNameLabel.TextSize = 13; pNameLabel.BackgroundTransparency = 1; pNameLabel.TextXAlignment = "Left"
+‏local pUserLabel = Instance.new("TextLabel", IDCard); pUserLabel.Text = "@" .. LP.Name; pUserLabel.Size = UDim2.new(0, 115, 0, 15); pUserLabel.Position = UDim2.new(0, 100, 0, 32); pUserLabel.TextColor3 = Theme.Gray; pUserLabel.Font = "GothamMedium"; pUserLabel.TextSize = 10; pUserLabel.BackgroundTransparency = 1; pUserLabel.TextXAlignment = "Left"
+‏local RankBox = Instance.new("Frame", IDCard); RankBox.Size = UDim2.new(0, 70, 0, 18); RankBox.Position = UDim2.new(0, 100, 0, 55); RankBox.BackgroundColor3 = Theme.SubBox; ApplyBoxStyle(RankBox, Theme.Accent).Thickness = 0.8
+‏local RT = Instance.new("TextLabel", RankBox); RT.Size = UDim2.new(1, 0, 1, 0); RT.Text = "★ OWNER"; RT.TextColor3 = Theme.Accent; RT.Font = "GothamBold"; RT.TextSize = 8; RT.BackgroundTransparency = 1
 
-local Line = Instance.new("Frame", Nav)
-Line.Size = UDim2.new(0, 35, 0, 2)
-Line.Position = UDim2.new(0, 22, 0, 48)
-Line.BackgroundColor3 = Theme.Accent
-Line.BorderSizePixel = 0
+‏function CreateRow(icon, text, y)
+‏    local r = Instance.new("Frame", IDCard); r.Size = UDim2.new(1, -30, 0, 26); r.Position = UDim2.new(0, 15, 0, y); r.BackgroundColor3 = Theme.SubBox; Instance.new("UICorner", r).CornerRadius = UDim.new(0, 6)
+‏    local l = Instance.new("TextLabel", r); l.Size = UDim2.new(1, -10, 1, 0); l.Position = UDim2.new(0, 10, 0, 0); l.Text = icon .. "  " .. text; l.TextColor3 = Theme.Gray; l.Font = "GothamMedium"; l.TextSize = 9; l.BackgroundTransparency = 1; l.TextXAlignment = "Left"; return l
+‏end
+‏CreateRow("👤", "ID: " .. LP.UserId, 100); CreateRow("📱", "Device: " .. (UIS.TouchEnabled and "Mobile" or "PC"), 130); CreateRow("🗓️", "Age: " .. LP.AccountAge .. " Days", 160)
+‏local SL = CreateRow("🕒", "Session: 00:00:00", 190); SL.TextColor3 = Theme.Accent
 
-local function CreateTab(name, x, target)
-    local btn = Instance.new("TextButton", Nav)
-    btn.Size = UDim2.new(0, 80, 1, 0)
-    btn.Position = UDim2.new(0, x, 0, 0)
-    btn.BackgroundTransparency = 1
-    btn.Text = name
-    btn.TextColor3 = (target == "Home" and Theme.White or Theme.Gray)
-    btn.Font = "GothamBold"
-    btn.TextSize = 12
-    btn.MouseButton1Click:Connect(function()
-        PlayClickSound()
-        TS:Create(Line, TweenInfo.new(0.3), {Position = UDim2.new(0, x + 22, 0, 48)}):Play()
-        for k, v in pairs(P) do v.Visible = (k == target) end
-        for _, obj in pairs(Nav:GetChildren()) do
-            if obj:IsA("TextButton") then obj.TextColor3 = Theme.Gray end
-        end
-        btn.TextColor3 = Theme.White
-    end)
-end
+‏local BB = Instance.new("Frame", P.Home); BB.Size = UDim2.new(1, -285, 0, 220); BB.Position = UDim2.new(0, 260, 0, 20); BB.BackgroundColor3 = Theme.Card; ApplyBoxStyle(BB)
+‏local OL = Instance.new("TextLabel", BB); OL.Size = UDim2.new(0, 150, 0, 20); OL.Position = UDim2.new(0, 15, 0, 12); OL.Text = "🟢 Online Users: --"; OL.TextColor3 = Theme.Green; OL.Font = "GothamBold"; OL.TextSize = 10; OL.BackgroundTransparency = 1; OL.TextXAlignment = "Left"
 
-CreateTab("HOME", 0, "Home")
-CreateTab("PAGES", 85, "Scripts")
-CreateTab("CREDITS", 170, "Credits")
+-- [[ نَص الحقوق الجديد ]] --
+‏local CreditsLabel = Instance.new("TextLabel", BB)
+‏CreditsLabel.Size = UDim2.new(1, -20, 0, 20); CreditsLabel.Position = UDim2.new(0, 15, 1, -25); CreditsLabel.BackgroundTransparency = 1
+‏CreditsLabel.Text = "@made by Berserk&Naxor"; CreditsLabel.TextColor3 = Theme.Gray; CreditsLabel.Font = "GothamMedium"; CreditsLabel.TextSize = 9; CreditsLabel.TextXAlignment = "Left"
 
--- محتوى HOME
-local IDCard = Instance.new("Frame", P.Home)
-IDCard.Size = UDim2.new(0, 220, 0, 220)
-IDCard.Position = UDim2.new(0, 25, 0, 20)
-IDCard.BackgroundColor3 = Theme.Card
-ApplyBoxStyle(IDCard)
+‏function CreateFooterBox(name, x, w)
+‏    local b = Instance.new("TextButton", P.Home); b.Size = UDim2.new(0, w, 0, 50); b.Position = UDim2.new(0, x, 0, 255); b.BackgroundColor3 = Theme.Card; b.Text = name; b.TextColor3 = Theme.White; b.Font = "GothamBold"; b.TextSize = 10; ApplyBoxStyle(b)
+‏    b.MouseButton1Click:Connect(function() ShowCenterNotify(name .. " Is Under Maintenance") end)
+‏end
+‏CreateFooterBox("CONFIG SYSTEM", 25, 105); CreateFooterBox("UI SETTINGS", 140, 105); CreateFooterBox("NEWS & UPDATES", 260, 275)
 
-local pImg = Instance.new("ImageLabel", IDCard)
-pImg.Size = UDim2.new(0, 75, 0, 75)
-pImg.Position = UDim2.new(0, 15, 0, 15)
-pImg.Image = "rbxthumb://type=AvatarHeadShot&id=" .. LP.UserId .. "&w=150&h=150"
-pImg.BackgroundTransparency = 1
-Instance.new("UICorner", pImg).CornerRadius = UDim.new(0, 10)
-ApplyBoxStyle(pImg, Theme.Accent).Thickness = 0.5
+‏-- [[ PAGES (SCRIPTS) ]] --
+‏local SearchBar = Instance.new("TextBox", P.Scripts); SearchBar.Size = UDim2.new(1, -50, 0, 35); SearchBar.Position = UDim2.new(0, 25, 0, 10); SearchBar.BackgroundColor3 = Theme.Card; SearchBar.PlaceholderText = "🔍 Search scripts..."; SearchBar.Text = ""; SearchBar.TextColor3 = Theme.White; SearchBar.Font = "GothamBold"; SearchBar.TextSize = 12; ApplyBoxStyle(SearchBar, Theme.Accent).Thickness = 0.8
+‏local Sc = Instance.new("ScrollingFrame", P.Scripts); Sc.Size = UDim2.new(1, -30, 1, -70); Sc.Position = UDim2.new(0, 15, 0, 55); Sc.BackgroundTransparency = 1; Sc.CanvasSize = UDim2.new(0, 0, 0, 0); Sc.AutomaticCanvasSize = Enum.AutomaticSize.Y; Sc.ScrollBarThickness = 2; Sc.ScrollBarImageColor3 = Theme.Accent; Sc.ScrollBarImageTransparency = 0.8; Sc.MouseEnter:Connect(function() TS:Create(Sc, TweenInfo.new(0.3), {ScrollBarImageTransparency = 0.3}):Play() end); Sc.MouseLeave:Connect(function() TS:Create(Sc, TweenInfo.new(0.3), {ScrollBarImageTransparency = 0.8}):Play() end)
+‏local GL = Instance.new("UIGridLayout", Sc); GL.CellSize = UDim2.new(0, 160, 0, 50); GL.CellPadding = UDim2.new(0, 12, 0, 12); GL.HorizontalAlignment = "Center"
+‏function AddScriptButton(n, isTest)
+‏    local b = Instance.new("TextButton", Sc); b.Name = n; b.Text = n; b.BackgroundColor3 = Theme.Card; b.TextColor3 = Theme.White; b.Font = "GothamBold"; b.TextSize = 10; ApplyBoxStyle(b); b.MouseButton1Click:Connect(function() PlayClickSound(); if isTest then ShowPage(P.TestPage) else ShowCenterNotify("Script Executed: " .. n) end end)
+‏end
+‏SearchBar.GetPropertyChangedSignal(SearchBar, "Text"):Connect(function() local text = SearchBar.Text:lower(); for _, child in pairs(Sc:GetChildren()) do if child:IsA("TextButton") then child.Visible = child.Name:lower():find(text) and true or false end end end)
+‏AddScriptButton("تجربة 1", true); for i = 1, 20 do AddScriptButton("Script " .. i, false) end
 
-local pName = Instance.new("TextLabel", IDCard)
-pName.Text = LP.DisplayName
-pName.Size = UDim2.new(0, 115, 0, 20)
-pName.Position = UDim2.new(0, 100, 0, 15)
-pName.TextColor3 = Theme.White
-pName.Font = "GothamBold"
-pName.TextSize = 13
-pName.BackgroundTransparency = 1
-pName.TextXAlignment = "Left"
+‏-- [[ TOGGLE ]] --
+‏local Tog = Instance.new("ImageButton", Screen); Tog.Size = UDim2.new(0, 52, 0, 52); Tog.Position = UDim2.new(0.02, 15, 0.4, 0); Tog.BackgroundColor3 = Theme.Card; Tog.Image = CustomImageID; Tog.Visible = false; ApplyBoxStyle(Tog, Theme.Accent).Thickness = 1.8; MakeDrag(Tog, Tog)
+‏Tog.MouseButton1Click:Connect(function() PlayClickSound(); Main.Visible = true; Tog.Visible = false end)
+‏Close.MouseButton1Click:Connect(function() PlayClickSound(); Main.Visible = false; Tog.Visible = true end)
 
-local uName = Instance.new("TextLabel", IDCard)
-uName.Text = "@" .. LP.Name
-uName.Size = UDim2.new(0, 115, 0, 15)
-uName.Position = UDim2.new(0, 100, 0, 30)
-uName.TextColor3 = Theme.Gray
-uName.Font = "GothamMedium"
-uName.TextSize = 9
-uName.BackgroundTransparency = 1
-uName.TextXAlignment = "Left"
-
-local RB = Instance.new("Frame", IDCard)
-RB.Size = UDim2.new(0, 65, 0, 18)
-RB.Position = UDim2.new(0, 100, 0, 48)
-RB.BackgroundColor3 = Theme.SubBox
-ApplyBoxStyle(RB, Theme.Accent).Thickness = 0.6
-
-local RT = Instance.new("TextLabel", RB)
-RT.Size = UDim2.new(1, 0, 1, 0)
-RT.Text = "★ OWNER"
-RT.TextColor3 = Theme.Accent
-RT.Font = "GothamBold"
-RT.TextSize = 8
-RT.BackgroundTransparency = 1
-
-function CreateRow(icon, text, y)
-    local r = Instance.new("Frame", IDCard)
-    r.Size = UDim2.new(1, -30, 0, 26)
-    r.Position = UDim2.new(0, 15, 0, y)
-    r.BackgroundColor3 = Theme.SubBox
-    Instance.new("UICorner", r).CornerRadius = UDim.new(0, 6)
-    local l = Instance.new("TextLabel", r)
-    l.Size = UDim2.new(1, -10, 1, 0)
-    l.Position = UDim2.new(0, 10, 0, 0)
-    l.Text = icon .. "  " .. text
-    l.TextColor3 = Theme.Gray
-    l.Font = "GothamMedium"
-    l.TextSize = 9
-    l.BackgroundTransparency = 1
-    l.TextXAlignment = "Left"
-    return l
-end
-
-CreateRow("📱", "Device: " .. (UIS.TouchEnabled and "Mobile" or "PC"), 100)
-CreateRow("🗓️", "Age: " .. LP.AccountAge .. " Days", 130)
-local SL = CreateRow("🕒", "Session: 00:00:00", 160)
-SL.TextColor3 = Theme.Accent
-
-local BB = Instance.new("Frame", P.Home)
-BB.Size = UDim2.new(1, -285, 0, 220)
-BB.Position = UDim2.new(0, 260, 0, 20)
-BB.BackgroundColor3 = Theme.Card
-ApplyBoxStyle(BB)
-
-local OL = Instance.new("TextLabel", BB)
-OL.Size = UDim2.new(0, 150, 0, 20)
-OL.Position = UDim2.new(0, 15, 0, 12)
-OL.TextColor3 = Theme.Green
-OL.Font = "GothamBold"
-OL.TextSize = 10
-OL.BackgroundTransparency = 1
-OL.TextXAlignment = "Left"
-
-function CreateFooterBox(name, x, w)
-    local b = Instance.new("TextButton", P.Home)
-    b.Size = UDim2.new(0, w, 0, 50)
-    b.Position = UDim2.new(0, x, 0, 255)
-    b.BackgroundColor3 = Theme.Card
-    b.Text = name
-    b.TextColor3 = Theme.White
-    b.Font = "GothamBold"
-    b.TextSize = 10
-    ApplyBoxStyle(b)
-    b.MouseButton1Click:Connect(function()
-        ShowCenterNotify("⚠️ قيد الصيانة")
-    end)
-end
-
-CreateFooterBox("CONFIG SYSTEM", 25, 105)
-CreateFooterBox("UI SETTINGS", 140, 105)
-CreateFooterBox("NEWS & UPDATES", 260, 275)
-
--- نظام PAGES - مع السكرول المطور
-local SB = Instance.new("TextBox", P.Scripts)
-SB.Size = UDim2.new(1, -50, 0, 35)
-SB.Position = UDim2.new(0, 25, 0, 15)
-SB.BackgroundColor3 = Theme.Card
-SB.PlaceholderText = "🔍 Search Scripts..."
-SB.TextColor3 = Theme.White
-SB.Font = "GothamBold"
-SB.TextSize = 12
-ApplyBoxStyle(SB, Theme.Accent).Thickness = 0.8
-
-local Sc = Instance.new("ScrollingFrame", P.Scripts)
-Sc.Size = UDim2.new(1, -40, 1, -80)
-Sc.Position = UDim2.new(0, 20, 0, 65)
-Sc.BackgroundTransparency = 1
-Sc.CanvasSize = UDim2.new(0, 0, 3, 0)
-
--- تعديلات السكرول الحديثة
-Sc.ScrollBarThickness = 3
-Sc.ScrollBarImageColor3 = Theme.Accent
-Sc.ScrollBarImageTransparency = 0.2
-Sc.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-Sc.VerticalScrollBarPosition = Enum.VerticalScrollBarPosition.Right
-
-local GL = Instance.new("UIGridLayout", Sc)
-GL.CellSize = UDim2.new(0, 160, 0, 45)
-GL.CellPadding = UDim2.new(0, 15, 0, 15)
-GL.HorizontalAlignment = "Center"
-
-function AddSc(n)
-    local b = Instance.new("TextButton", Sc)
-    b.Name = n
-    b.Text = n
-    b.BackgroundColor3 = Theme.Card
-    b.TextColor3 = Theme.White
-    b.Font = "GothamBold"
-    b.TextSize = 10
-    ApplyBoxStyle(b)
-    b.MouseButton1Click:Connect(function()
-        PlayClickSound()
-    end)
-end
-
-for i = 1, 20 do
-    AddSc("Script Example " .. i)
-end
-
-SB:GetPropertyChangedSignal("Text"):Connect(function()
-    local inp = SB.Text:lower()
-    for _, v in pairs(Sc:GetChildren()) do
-        if v:IsA("TextButton") then
-            v.Visible = v.Name:lower():find(inp)
-        end
-    end
-end)
-
-local Tog = Instance.new("ImageButton", Screen)
-Tog.Name = "Tog"
-Tog.Size = UDim2.new(0, 52, 0, 52)
-Tog.Position = UDim2.new(0.02, 15, 0.4, 0)
-Tog.BackgroundColor3 = Theme.Card
-Tog.Image = CustomImageID
-Tog.Visible = false
-ApplyBoxStyle(Tog, Theme.Accent).Thickness = 1.8
-MakeDrag(Tog, Tog)
-
-Tog.MouseButton1Click:Connect(function()
-    PlayClickSound()
-    Main.Visible = true
-    Tog.Visible = false
-end)
-
-task.spawn(function()
-    local st = os.time()
-    while task.wait(1) do
-        local e = os.time() - st
-        -- تحديث مدة الجلسة
-        local hours = math.floor(e / 3600)
-        local minutes = math.floor((e % 3600) / 60)
-        local seconds = e % 60
-        local timeStr = string.format("🕒  Session: %02d:%02d:%02d", hours, minutes, seconds)
-        -- تحديث عدد اللاعبين
-        local playerCount = #Players:GetPlayers()
-        -- تحديث النصوص
-        local SL = P.Home:FindFirstChild("SessionLabel")
-        if SL then
-            SL.Text = timeStr
-        end
-        local OL = P.Home:FindFirstChild("OnlineLabel")
-        if OL then
-            OL.Text = "🟢 Online Users: " .. playerCount
-        end
-    end
-end)
-
-ShowCenterNotify("Modern Scrolling Applied - Naxor")
-
--- ===================== إضافات خاصة بالـ GUI2 ===================== --
-
--- إنشاء الـ GUI2 الفارغ مع زر رجوع
-local GUI2 = Instance.new("Frame", Screen)
-GUI2.Name = "GUI2Frame"
-GUI2.Size = UDim2.new(0, 560, 0, 390)
-GUI2.Position = UDim2.new(0.5, -280, 0.5, -195)
-GUI2.BackgroundColor3 = Theme.Main
-ApplyBoxStyle(GUI2, Theme.Accent)
-GUI2.UIStroke.Thickness = 1.8
-GUI2.Visible = false -- إخفاؤه في البداية
-
-local Header2 = Instance.new("Frame", GUI2)
-Header2.Size = UDim2.new(1, 0, 0, 65)
-Header2.BackgroundTransparency = 1
-MakeDrag(GUI2, Header2)
-
--- زر رجوع
-local BackButton = Instance.new("TextButton", Header2)
-BackButton.Size = UDim2.new(0, 50, 0, 50)
-BackButton.Position = UDim2.new(0, 10, 0, 10)
-BackButton.BackgroundColor3 = Theme.SubBox
-BackButton.Text = "⮐"
-BackButton.TextColor3 = Theme.White
-BackButton.Font = "GothamBold"
-BackButton.TextSize = 20
-ApplyBoxStyle(BackButton)
-
-BackButton.MouseButton1Click:Connect(function()
-    GUI2.Visible = false
-    Main.Visible = true
-end)
-
--- وظيفة لعرض الـ GUI2 عند الضغط على زر "bloxfruits"
-function ShowGui2()
-    Main.Visible = false
-    GUI2.Visible = true
-end
-
--- دالة إضافة السكربتات مع التحقق من اسم "bloxfruits"
-local function AddSc(name)
-    local b = Instance.new("TextButton", Sc)
-    b.Name = name
-    b.Text = name
-    b.BackgroundColor3 = Theme.Card
-    b.TextColor3 = Theme.White
-    b.Font = "GothamBold"
-    b.TextSize = 10
-    ApplyBoxStyle(b)
-    b.MouseButton1Click:Connect(function()
-        if name == "bloxfruits" then
-            ShowGui2()
-        else
-            PlayClickSound()
-        end
-    end)
-end
-
--- إضافة زر "bloxfruits"
-AddSc("bloxfruits")
+‏task.spawn(function()
+‏    local st = os.time()
+‏    while task.wait(1) do
+‏        local e = os.time() - st; local h, m, s = math.floor(e/3600), math.floor((e%3600)/60), e%60
+‏        SL.Text = string.format("🕒  Session: %02d:%02d:%02d", h, m, s); OL.Text = "🟢 Online Users: " .. #Players:GetPlayers()
+‏    end
+‏end)
